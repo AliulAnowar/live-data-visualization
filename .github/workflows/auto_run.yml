@@ -3,7 +3,8 @@ name: Auto Update M&E Dashboard Data
 on:
   push:
     paths:
-      - 'NGO_Project_MNE_Dataset_2000.xlsx'  # Trigger only when this file changes
+      - 'NGO_Project_MNE_Dataset_2000.xlsx'
+  workflow_dispatch: # Allows you to manually trigger updates with a single click button
 
 jobs:
   build-and-refresh:
@@ -16,7 +17,7 @@ jobs:
     - name: Set up cloud Python environment
       uses: actions/setup-python@v5
       with:
-        python-python: '3.10'
+        python-version: '3.10' # ✅ Fixed the key name
 
     - name: Install required libraries
       run: |
