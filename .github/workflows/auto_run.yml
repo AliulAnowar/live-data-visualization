@@ -1,0 +1,35 @@
+name: Auto Update M&E Dashboard Data
+
+on:
+  push:
+    paths:
+      - 'NGO_Project_MNE_Dataset_2000.xlsx'  # Trigger only when this file changes
+
+jobs:
+  build-and-refresh:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository files
+      uses: actions/checkout@v4
+
+    - name: Set up cloud Python environment
+      uses: actions/setup-python@v5
+      with:
+        python-python: '3.10'
+
+    - name: Install required libraries
+      run: |
+        python -m pip install --upgrade pip
+        pip install pandas openpyxl matplotlib
+
+    - name: Run data automation pipeline script
+      run: python update_dashboard.py
+
+    - name: Commit and push updated chart back to dashboard
+      run: |
+        git config --global user.name "GitHub Action Bot"
+        git config --global user.email "actions@github.com"
+        git add district_chart.png
+        git diff-index --quiet HEAD || git commit -m "🤖 Auto-updated dashboard metrics [Skip CI]"
+        git push
