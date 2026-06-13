@@ -21,9 +21,9 @@ Below is the live data visualization tracking our regional distributions across 
 
 ![District Distribution Chart](district_chart.png)
 
-### 📈 Verified Statistical Insights (Live Tracking Integration)
+### 📈 Verified Statistical Insights (Live Monitoring Output)
 
-* **Geographic Sample Distribution:** The tracking dataset automatically processes incoming metrics across active household records. **Rangpur** represents the primary implementation hub with **808 records**, followed closely by **Kurigram** (414), **Dinajpur** (403), and **Gaibandha** (377). The dynamic visualization engine updates these regional frequencies instantly upon database updates.
+* **Geographic Sample Distribution:** The tracking dataset automatically parses real-time metrics directly across active field household records. **Rangpur** stands as our primary implementation hub leading with **808 records**, followed sequentially by **Gaibandha** (577), **Kurigram** (414), and **Dinajpur** (403). The pipeline updates these regional distributions instantly upon database changes.
 
 * **Target Demographics:** In alignment with institutional micro-finance and maternal development targets, the baseline gender distribution was programmatically optimized to focus heavily on female empowerment, capturing **1,297 Female beneficiaries (64.9%)** and 703 Male beneficiaries (35.2%).
 
