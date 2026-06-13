@@ -33,4 +33,4 @@ jobs:
         git config --global user.email "actions@github.com"
         git add district_chart.png
         git diff-index --quiet HEAD || git commit -m "🤖 Auto-updated dashboard metrics [Skip CI]"
-        git push
+        git push --force
