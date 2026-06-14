@@ -23,9 +23,9 @@ Below is the live data visualization tracking our regional distributions across 
 
 ### 📈 Verified Statistical Insights (Live Monitoring Output)
 
-* **Geographic Sample Distribution:** The tracking dataset automatically parses real-time metrics directly across active field household records. **Rangpur** stands as our primary implementation hub leading with **830 records**, followed sequentially by **Gaibandha** (377), **Kurigram** (414), and **Dinajpur** (448). The pipeline updates these regional distributions instantly upon database changes. Total live tracked sample size is **2069 households**.
+* **Geographic Sample Distribution:** The tracking dataset automatically parses real-time metrics directly across active field household records. **Rangpur** stands as our primary implementation hub leading with **830 records**, followed sequentially by **Gaibandha** (460), **Kurigram** (414), and **Dinajpur** (448). The pipeline updates these regional distributions instantly upon database changes. Total live tracked sample size is **2152 households**.
 
-* **Target Demographics:** In alignment with institutional micro-finance and maternal development targets, the baseline gender distribution was programmatically optimized to focus heavily on female empowerment, capturing **1337 Female beneficiaries (64.6%)** and 732 Male beneficiaries (35.4%).
+* **Target Demographics:** In alignment with institutional micro-finance and maternal development targets, the baseline gender distribution was programmatically optimized to focus heavily on female empowerment, capturing **1395 Female beneficiaries (64.8%)** and 757 Male beneficiaries (35.2%).
 
 * **Core Interventions:** Programmatic resource allocation was distributed equally across core developmental pillars tracked live within the main tracking database architecture.
 
