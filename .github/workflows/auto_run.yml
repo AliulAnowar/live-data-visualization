@@ -31,7 +31,11 @@ jobs:
       run: |
         git config --global user.name "GitHub Action Bot"
         git config --global user.email "actions@github.com"
-        git add district_chart.png
+        
+        # Track ALL changes (both your chart image AND your newly written README.md)
+        git add -A
+        
         git diff-index --quiet HEAD || git commit -m "🤖 Auto-updated dashboard metrics [Skip CI]"
+        
         git pull --rebase origin main
         git push origin main
