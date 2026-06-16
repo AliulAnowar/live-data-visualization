@@ -68,7 +68,7 @@ try:
     <div id="loginGateway" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 dark:bg-[#060913]/80 backdrop-blur-md transition-all duration-500">
         <div class="w-full max-w-md p-8 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 shadow-2xl space-y-6 text-center">
             <div class="flex flex-col items-center gap-3">
-                <div class="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-emerald-500/20">image/logo.svg</div>
+                <div flex-col md:flex-row and grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">"image/logo.svg"</div>
                 <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white mt-2">M&E Enterprise Portal</h1>
                 <p class="text-xs text-slate-400 max-w-xs mx-auto">Authorize your identity parameters using Google Identity Access Control Services to enter your secure workspace reporting layer.</p>
             </div>
