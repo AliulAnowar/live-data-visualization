@@ -37,7 +37,11 @@ try:
     
     sync_time = datetime.now().strftime("%Y-%m-%d %H:%M")
 
+    # Calculate proportion safely for JS injection string interpolation
+    female_ratio = female_count / total_records if total_records > 0 else 0.5
+
     # 4. --- MASTERPIECE DUAL-ROLE AUTHENTICATION HTML FACTORY ---
+    # Using normal string concatenation or double-brackets to ensure Python Action doesn't throw exit code 1
     html_content = f"""<!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
@@ -46,7 +50,7 @@ try:
     <title>M&E Advanced Enterprise Workspace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {{
             darkMode: 'class',
@@ -107,9 +111,7 @@ try:
                         <div id="userProfileName" class="text-xs font-semibold dark:text-white">Validating Account...</div>
                         <div id="userProfileRoleBadge" class="text-[9px] font-bold tracking-wider uppercase text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded-md mt-0.5 inline-block">Role Access</div>
                     </div>
-                    <div id="userProfileAvatar" class="w-9 h-9 rounded-full bg-emerald-600 border-2 border-emerald-500 overflow-hidden flex items-center justify-center font-bold text-sm text-white">
-                        U
-                    </div>
+                    <div id="userProfileAvatar" class="w-9 h-9 rounded-full bg-emerald-600 border-2 border-emerald-500 overflow-hidden flex items-center justify-center font-bold text-sm text-white">U</div>
                     <button onclick="executeSignOutWorkflow()" class="text-slate-400 hover:text-red-400 text-xs font-medium pl-2 transition">🚪 Exit</button>
                 </div>
             </div>
@@ -221,37 +223,29 @@ try:
     </div>
 
     <script>
-        // Theme Toggle Mechanics
         document.getElementById('themeToggle').addEventListener('click', () => {{
             document.documentElement.classList.toggle('dark');
         }});
 
-        // Core Session Database Storage Framework
         let sessionData = [];
         let globalChartInstance = null;
         
-        // Target list values sourced straight from Python runtime arrays
         const defaultDistricts = {list(sorted_districts)};
         const defaultValues = {list(sorted_values)};
+        const baselineRatio = {female_ratio};
         
-        // Decompress baseline data records into active processing engine state arrays
         function initializeCoreDataStore() {{
-            const cachedData = localStorage.getItem('mne_session_db_v2');
+            const cachedData = localStorage.getItem('mne_session_db_v3');
             if (cachedData) {{
                 sessionData = JSON.parse(cachedData);
             }} else {{
-                // Fallback: Populate baseline array structure reflecting our core 2000 Excel rows
                 sessionData = [];
-                // Unroll regional items
                 defaultDistricts.forEach((dist, idx) => {{
                     const count = defaultValues[idx];
                     for(let i=0; i < count; i++) {{
-                        // Distribute gender counts realistically across baseline rows
                         let gender = "Female";
-                        if (dist === "Rangpur" && i > count * {female_count/total_records}) gender = "Male";
-                        if (dist === "Gaibandha" && i > count * 0.6) gender = "Male";
-                        if (dist === "Dinajpur" && i > count * 0.68) gender = "Male";
-                        if (dist === "Kurigram" && i > count * 0.55) gender = "Male";
+                        if (dist === "Rangpur" && i > count * baselineRatio) gender = "Male";
+                        else if (i > count * 0.6) gender = "Male";
                         
                         sessionData.push({{ district: dist, gender: gender }});
                     }}
@@ -262,19 +256,16 @@ try:
         }}
 
         function saveSessionDataToCache() {{
-            localStorage.setItem('mne_session_db_v2', JSON.stringify(sessionData));
+            localStorage.setItem('mne_session_db_v3', JSON.stringify(sessionData));
         }}
 
-        // Authentication State Rules & Access Validation Methods
         function executeAuthenticationWorkflow() {{
             const emailInput = document.getElementById('authEmail').value.trim();
             if (!emailInput) {{ alert("Please input a valid Google Corporate Email Identity."); return; }}
             
-            // Extract display meta configurations
             const username = emailInput.split('@')[0];
             const isManager = (emailInput.toLowerCase() === 'manager@mne.org');
             
-            // Record auth profiles to local runtime state memory
             const userProfile = {{
                 email: emailInput,
                 name: username.charAt(0).toUpperCase() + username.slice(1) + " (Google Authed)",
@@ -287,7 +278,6 @@ try:
         }}
 
         function applyUserRoleAuthorizations(user) {{
-            // Render user identity text variables across UI components
             document.getElementById('userProfileName').innerText = user.name;
             document.getElementById('userProfileRoleBadge').innerText = user.role;
             document.getElementById('userProfileAvatar').innerText = user.avatarChar;
@@ -308,7 +298,6 @@ try:
                 adminPanel.classList.remove('scale-100', 'opacity-100');
             }}
             
-            // Animate transition reveal from Splash Page to Dashboard App Canvas
             document.getElementById('loginGateway').classList.add('scale-110', 'opacity-0', 'pointer-events-none');
             const mainApp = document.getElementById('mainDashboardApp');
             mainApp.classList.remove('hidden');
@@ -322,37 +311,27 @@ try:
             location.reload();
         }}
 
-        // Dynamic Administrative Record Mutations
-        // This function handles your data input form elements and injects items live!
         function commitNewRecordToSessionDB() {{
             const selectedDistrict = document.getElementById('inputDistrict').value;
             const selectedGender = document.getElementById('inputGender').value;
             
-            // Build and append new household item record to active collection arrays
             const newRecord = {{ district: selectedDistrict, gender: selectedGender }};
             sessionData.push(newRecord);
             saveSessionDataToCache();
             
-            // Re-execute calculations and refresh visual components immediately
             recalculateDashboardAggregates();
-            
-            // Provide short confirmation notify trigger alert
             alert(`✓ Database Success: 1 New Household successfully logged under Location: ${{selectedDistrict}} [${{selectedGender}}].`);
         }}
 
-        // Global Dynamic Statistical Recalculation Engine Layer
         function recalculateDashboardAggregates() {{
             const activeFilter = document.getElementById('queryEngine').value;
             
-            // Filter records array based on Sidebar criteria selection choice
             const filteredRecords = sessionData.filter(row => {{
                 return (activeFilter === 'all' || row.district === activeFilter);
             }});
             
-            // Update Core Total KPI Numeric Score Cards
             document.getElementById('kpiTotalRecords').innerText = filteredRecords.length;
             
-            // Calculate Gender Ratios on the fly
             let females = 0; let males = 0;
             filteredRecords.forEach(r => {{
                 if (r.gender === 'Female') females++;
@@ -364,26 +343,22 @@ try:
             const malePct = ((males / total) * 100).toFixed(1);
             
             document.getElementById('kpiFemalePct').innerText = femalePct + "%";
-            document.getElementById('kpiFemaleCount').innerText = `Target sample: ${female} active rows`;
+            document.getElementById('kpiFemaleCount').innerText = `Target sample: ${{females}} active rows`;
             document.getElementById('kpiMalePct').innerText = malePct + "%";
-            document.getElementById('kpiMaleCount').innerText = `Target sample: ${male} active rows`;
+            document.getElementById('kpiMaleCount').innerText = `Target sample: ${{males}} active rows`;
             
-            // Compile regional distribution counts for graphic chart metrics arrays
             const mapCounts = {};
             defaultDistricts.forEach(d => mapCounts[d] = 0);
             sessionData.forEach(row => {{ if (mapCounts[row.district] !== undefined) mapCounts[row.district]++; }});
             
-            // Sort arrays instantly from highest frequency count down to lowest
             const sortedKeys = Object.keys(mapCounts).sort((a,b) => mapCounts[b] - mapCounts[a]);
             const sortedDataValues = sortedKeys.map(k => mapCounts[k]);
             
             renderInteractiveChartGraphics(sortedKeys, sortedDataValues);
         }}
 
-        // Watch for sidebar selector criteria changes to reload dashboard data rows instantly
         document.getElementById('queryEngine').addEventListener('change', recalculateDashboardAggregates);
 
-        // Chart.js Canvas Plot Render Logic Function
         function renderInteractiveChartGraphics(labelsArray, dataValuesArray) {{
             const canvasCtx = document.getElementById('luxuryInteractiveChart').getContext('2d');
             
@@ -416,7 +391,6 @@ try:
             }});
         }}
 
-        // Check if an existing profile is already cached on startup
         window.addEventListener('DOMContentLoaded', () => {{
             const cachedUser = sessionStorage.getItem('current_mne_user');
             if (cachedUser) {{
