@@ -59,9 +59,9 @@ html_content = """<!DOCTYPE html>
         </div>
     </div>
 
-    <div id="mainDashboardApp" class="opacity-0 transition-opacity duration-700 hidden flex-1 flex flex-col">
+    <div id="mainDashboardApp" class="opacity-0 transition-opacity duration-700 hidden flex-1 flex flex-col w-full">
         
-        <header class="bg-white dark:bg-[#111827] border-b border-slate-200/80 dark:border-slate-800/50 px-4 sm:px-8 py-4 flex flex-col md:flex-row gap-4 items-center justify-between transition-colors duration-300">
+        <header class="bg-white dark:bg-[#111827] border-b border-slate-200/80 dark:border-slate-800/50 px-4 sm:px-8 py-4 flex flex-col md:flex-row gap-4 items-center justify-between transition-colors duration-300 w-full">
             <div class="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto justify-between md:justify-start">
                 <div class="flex items-center gap-3">
                     <img src="image/logo.svg" alt="M&E Logo" class="h-10 w-10 object-contain">
@@ -87,9 +87,9 @@ html_content = """<!DOCTYPE html>
             </div>
         </header>
 
-        <div class="flex flex-col lg:flex-row gap-6 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full min-w-0 flex-1">
+        <div class="flex flex-col md:flex-row gap-6 p-4 sm:p-6 lg:p-8 w-full max-w-[1600px] mx-auto flex-1 auto-rows-max items-start">
             
-            <aside class="w-full lg:w-64 shrink-0 space-y-6">
+            <aside class="w-full md:w-64 shrink-0 space-y-6">
                 <div class="bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800/50 p-5 rounded-2xl shadow-sm space-y-6">
                     <div>
                         <label class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Dataset Criteria Filter</label>
@@ -107,8 +107,8 @@ html_content = """<!DOCTYPE html>
                 </div>
 
                 <div class="text-[10px] text-slate-400 px-2">
-                    <div class="font-semibold text-slate-500 dark:text-slate-400">System Core: Python Engine</div>
-                    <div class="text-slate-400 mt-0.5">Pipeline Build: 2026-06-16 01:50</div>
+                    <div class="font-semibold text-slate-500 dark:text-slate-400">System Core: Python Pipeline Engine</div>
+                    <div class="text-slate-400 mt-0.5">Pipeline Build: 2026-06-17 Active</div>
                 </div>
             </aside>
 
@@ -119,20 +119,20 @@ html_content = """<!DOCTYPE html>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                    <div class="bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-2xl p-6 shadow-sm transition">
+                    <div class="bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-2xl p-6 shadow-sm">
                         <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Active Records</div>
                         <div id="kpiTotalRecords" class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight mt-2">2153</div>
                         <div class="text-[10px] text-emerald-500 font-semibold mt-2">✓ Verified Dataset Integrity Layer</div>
                     </div>
-                    <div class="bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-2xl p-6 shadow-sm transition">
+                    <div class="bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-2xl p-6 shadow-sm">
                         <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Female Demographics</div>
                         <div id="kpiFemalePct" class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight mt-2">...%</div>
-                        <div id="kpiFemaleCount" class="text-[10px] text-slate-400 mt-2">Calculating sample rows...</div>
+                        <div id="kpiFemaleCount" class="text-[10px] text-slate-400 mt-2">Calculating rows...</div>
                     </div>
-                    <div class="bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-2xl p-6 shadow-sm transition sm:col-span-2 lg:col-span-1">
+                    <div class="bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-2xl p-6 shadow-sm sm:col-span-2 lg:col-span-1">
                         <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Male Demographics</div>
                         <div id="kpiMalePct" class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight mt-2">...%</div>
-                        <div id="kpiMaleCount" class="text-[10px] text-slate-400 mt-2">Calculating sample rows...</div>
+                        <div id="kpiMaleCount" class="text-[10px] text-slate-400 mt-2">Calculating rows...</div>
                     </div>
                 </div>
 
@@ -192,7 +192,6 @@ html_content = """<!DOCTYPE html>
             </main>
         </div>
     </div>
-
     <script>
         document.getElementById('themeToggle').addEventListener('click', () => {
             document.documentElement.classList.toggle('dark');
