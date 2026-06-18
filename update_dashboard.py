@@ -1,5 +1,5 @@
 import os
-import requests req
+import requests as req
 import pandas as pd
 import matplotlib.pyplot as plt
 
