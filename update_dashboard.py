@@ -9,7 +9,6 @@ import matplotlib.pyplot as plt
 # ==============================================================================
 SUPABASE_URL = "https://ylymugpiocymibcsbnlj.supabase.co"  # <-- Change to your project URL
 SUPABASE_KEY = "YOUR_ACTUAL_ANON_PUBLIC_KEY_HERE"         # <-- Paste your long anon public key here
-
 def fetch_live_cloud_dataset():
     """
     Safely retrieves live datasets from Supabase Cloud.
@@ -34,30 +33,22 @@ def fetch_live_cloud_dataset():
             fallback_data.append({"district": dist, "gender": gender})
             
     try:
-        print("🌐 Connecting to Supabase Cloud Core data pipeline stream...")
+        print("Connecting to Supabase Cloud Core data pipeline stream...")
         response = requests.get(endpoint, headers=headers, timeout=15)
-        
-        # If keys are wrong, this raises an exception instead of breaking the script
         response.raise_for_status()
         raw_json_data = response.json()
         
-        # If table exists but has 0 entries
         if not raw_json_data or len(raw_json_data) == 0:
-            print("💡 Supabase table is empty. Running baseline mock matrix layout...")
+            print("Supabase table is empty. Running baseline mock matrix layout...")
             return pd.DataFrame(fallback_data)
             
-        print(f"🎉 Success! Retrieved {len(raw_json_data)} live records from Supabase.")
+        print(f"Success! Retrieved {len(raw_json_data)} live records from Supabase.")
         return pd.DataFrame(raw_json_data)
         
     except Exception as api_err:
-        print(f"⚠️ Supabase Authentication or Connection Refused: {api_err}")
-        print("🛡️ Safety protocol activated: Using seamless baseline data backup matrix.")
+        print(f"Supabase Authentication or Connection Refused: {api_err}")
+        print("Safety protocol activated: Using seamless baseline data backup matrix.")
         return pd.DataFrame(fallback_data)
-
-# ==============================================================================
-# 📊 DATA AGGREGATION & GRAPHICS ENGINE
-# ==============================================================================
-# 1. Extract data safely from the live cloud connection
 df = fetch_live_cloud_dataset()
 
 # 2. Compute variables for the UI metrics layout card slots
