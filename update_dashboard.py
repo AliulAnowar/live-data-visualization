@@ -1,16 +1,44 @@
 import os
+import requests
+import pandas as pd
+import matplotlib.pyplot as plt
 
-# --- 1. DATA PREPARATION LAYER ---
-# (If your script pulls from a CSV or Excel, that logic sits here)
-# Example: 
-# total_records = 2153
-# female_pct = "64.8%"
-# male_pct = "35.2%"
+# 🔑 Global Engine Environment Configuration
+SUPABASE_URL = "https://eghmzetfcimllmenhhei.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVnaG16ZXRmY2ltbGxtZW5oaGVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTA1MTAsImV4cCI6MjA5NzM2NjUxMH0.FLDImmDZ7pSlgcmoufnSENOhBPQAPQ20uZfYnHUQEq4"
 
-# --- 2. HTML CONTENT GENERATION ---
-# CRITICAL: We use a standard multiline string (""") instead of an f-string (f""")
-# so that JavaScript/CSS curly braces do not cause Python compilation failures.
-html_content = """<!DOCTYPE html>
+def fetch_live_cloud_dataset():
+    """
+    Pulls the full JSON data payload array from Supabase REST endpoint API
+    and reads it directly into a clean Pandas DataFrame for localized compilation.
+    """
+    endpoint = f"{SUPABASE_URL}/rest/v1/ngo_project_records?select=*"
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}"
+    }
+    
+    try:
+        print("🌐 Connecting to Supabase Cloud Core data pipeline stream...")
+        response = requests.get(endpoint, headers=headers, timeout=15)
+        response.raise_for_status()
+        raw_json_data = response.json()
+        
+        # Turn JSON payload directly into a processing DataFrame layout
+        df = pd.DataFrame(raw_json_data)
+        if df.empty:
+            # Fallback mock matrix baseline if table is freshly wiped
+            return pd.DataFrame([{"district": "Rangpur", "gender": "Female"}, {"district": "Gaibandha", "gender": "Male"}])
+        return df
+        
+    except Exception as api_err:
+        print(print(f"⚠️ Cloud retrieval down: {api_err}. Reverting back to secure local fallback matrix."))
+        return pd.DataFrame([{"district": "Rangpur", "gender": "Female"}])
+
+# 🚀 Inside your master executable workflow section:
+# replace your hardcoded dataset with:
+# df = fetch_live_cloud_dataset()
+# total_records = len(df)html_content = """<!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
@@ -282,15 +310,72 @@ html_content = """<!DOCTYPE html>
         }
 
         function commitNewRecordToSessionDB() {
-            const selectedDistrict = document.getElementById('inputDistrict').value;
-            const selectedGender = document.getElementById('inputGender').value;
-            
-            const newRecord = { district: selectedDistrict, gender: selectedGender };
-            sessionData.push(newRecord);
-            saveSessionDataToCache();
-            
-            recalculateDashboardAggregates();
-            alert(`✓ Database Success: 1 New Household successfully logged under Location: ${selectedDistrict} [${selectedGender}].`);
+           // 🔑 SUPABASE CONFIGURATION MATRIX KEYS
+// Replace these placeholders with your actual project keys from: Project Settings -> API
+const SUPABASE_PROJECT_URL = "https://eghmzetfcimllmenhhei.supabase.co";
+const SUPABASE_ANON_PUBLIC_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVnaG16ZXRmY2ltbGxtZW5oaGVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTA1MTAsImV4cCI6MjA5NzM2NjUxMH0.FLDImmDZ7pSlgcmoufnSENOhBPQAPQ20uZfYnHUQEq4";
+
+/**
+ * 💾 Live Post to Supabase Cloud Instance Database
+ * Captures variables from the expanded structural form layout and posts data asynchronously
+ */
+async function sendDataToSupabaseCloud() {
+    const districtElement = document.getElementById("inputDistrict");
+    const genderElement = document.getElementById("inputGender");
+    const phaseElement = document.getElementById("inputPhase");
+    const ageElement = document.getElementById("inputAge");
+    
+    if (!districtElement || !genderElement) {
+        alert("❌ Error tracking form target elements inside document DOM model.");
+        return;
+    }
+
+    const payload = {
+        district: districtElement.value,
+        gender: genderElement.value,
+        project_phase: phaseElement ? phaseElement.value : "Phase 1",
+        beneficiary_age: ageElement ? parseInt(ageElement.value, 10) : 32,
+        training_status: "Completed"
+    };
+
+    // UI Feedback: Disable button state during request latency window
+    const targetButton = event ? event.target : null;
+    if (targetButton) {
+        targetButton.disabled = true;
+        targetButton.innerText = "⏳ Synchronizing Row Core...";
+    }
+
+    try {
+        const response = await fetch(`${SUPABASE_PROJECT_URL}/rest/v1/ngo_project_records`, {
+            method: "POST",
+            headers: {
+                "apikey": SUPABASE_ANON_PUBLIC_KEY,
+                "Authorization": `Bearer ${SUPABASE_ANON_PUBLIC_KEY}`,
+                "Content-Type": "application/json",
+                "Prefer": "return=minimal"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Cloud transaction rejected with network code status: ${response.status}`);
+        }
+
+        alert("🎉 Record successfully written into Supabase Cloud Database instance!");
+        
+        // Optional: Re-fetch client side analytics engine or clear form values
+        if (ageElement) ageElement.value = "32";
+        
+    } catch (transactionError) {
+        console.error("Supabase Database error stream:", transactionError);
+        alert(`❌ Data Synchronization Failed: ${transactionError.message}`);
+    } finally {
+        if (targetButton) {
+            targetButton.disabled = false;
+            targetButton.innerText = "💾 Live Post to Supabase";
+        }
+    }
+}
         }
 
         function recalculateDashboardAggregates() {
