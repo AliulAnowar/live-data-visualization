@@ -135,19 +135,51 @@
                 alert("❌ Post failed: Check RLS configurations or table schema keys.");
             }
         }
+async function executeAuthenticationWorkflow() {
+    const emailInput = document.getElementById('authEmail').value.trim().toLowerCase();
+    
+    if (!emailInput) {
+        alert("Please enter a corporate email address to authorize login parameters.");
+        return;
+    }
 
-        function executeAuthenticationWorkflow() {
-            const email = document.getElementById('authEmail').value.trim();
-            if(!email) return;
-            const isManager = (email.toLowerCase() === 'manager@mne.org');
-            const userProfile = {
-                name: email.split('@')[0],
-                role: isManager ? 'ADMINISTRATOR' : 'VIEW ONLY',
-                avatarChar: email.substring(0,2).toUpperCase()
-            };
-            applyUserRoleAuthorizations(userProfile);
+    try {
+        // Query our new Supabase user_registry table for this exact email
+        const response = await fetch(`${SUPABASE_PROJECT_URL}/rest/v1/user_registry?email=eq.${encodeURIComponent(emailInput)}&select=*`, {
+            method: "GET",
+            headers: {
+                "apikey": SUPABASE_ANON_PUBLIC_KEY,
+                "Authorization": `Bearer ${SUPABASE_ANON_PUBLIC_KEY}`
+            }
+        });
+
+        if (!response.ok) throw new Error("Database validation transaction failed.");
+        
+        const userData = await response.json();
+
+        // Scenario A: Email address not found in system directory records
+        if (userData.length === 0) {
+            alert("❌ Access Denied: This email address is not registered within the M&E Identity Access Management system.");
+            return;
         }
 
+        // Scenario B: User found! Parse their security clearance parameters
+        const verifiedUser = userData[0];
+        const userProfile = {
+            name: verifiedUser.full_name,
+            role: verifiedUser.role_tier, // Will accurately be 'ADMINISTRATOR', 'EDITOR', or 'LOGGER'
+            avatarChar: verifiedUser.full_name.substring(0, 2).toUpperCase()
+        };
+
+        alert(`🔓 Welcome back, ${userProfile.name}! Clearance Layer: ${userProfile.role}`);
+        applyUserRoleAuthorizations(userProfile);
+
+    } catch (err) {
+        console.error(err);
+        alert("🚨 Critical Security Exception: Connection to cloud authorization registry timed out.");
+    }
+}
+      
         function applyUserRoleAuthorizations(user) {
             const adminPanel = document.getElementById('adminDataInputPanel');
             if (user.role === 'ADMINISTRATOR') {
