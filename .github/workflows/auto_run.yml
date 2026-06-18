@@ -30,7 +30,8 @@ jobs:
         pip install pandas openpyxl matplotlib requests
 
     - name: Run data automation pipeline script
-              env:
+      env:
+        
           SUPABASE_PROJECT_URL: ${{ secrets.SUPABASE_PROJECT_URL }}
           SUPABASE_ANON_PUBLIC_KEY: ${{ secrets.SUPABASE_ANON_PUBLIC_KEY }}
 
