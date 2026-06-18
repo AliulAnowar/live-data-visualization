@@ -1,5 +1,5 @@
 import os
-import requests
+import requests req
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -35,7 +35,7 @@ def fetch_live_cloud_dataset():
             
     try:
         print("🌐 Connecting to Supabase Cloud Core data pipeline stream...")
-        response = requests.get(endpoint, headers=headers, timeout=15)
+        response = req.get(endpoint, headers=headers, timeout=15)
         
         # If keys are wrong, this raises an exception instead of breaking the script
         response.raise_for_status()
