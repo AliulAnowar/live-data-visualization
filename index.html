@@ -179,22 +179,28 @@ async function executeAuthenticationWorkflow() {
         alert("🚨 Critical Security Exception: Connection to cloud authorization registry timed out.");
     }
 }
-      
-        function applyUserRoleAuthorizations(user) {
-            const adminPanel = document.getElementById('adminDataInputPanel');
-            if (user.role === 'ADMINISTRATOR') {
-                adminPanel.classList.remove('hidden');
-                setTimeout(() => { adminPanel.classList.remove('scale-95', 'opacity-0'); adminPanel.classList.add('scale-100', 'opacity-100'); }, 50);
-            }
-            document.getElementById('loginGateway').classList.add('scale-110', 'opacity-0', 'pointer-events-none');
-            const mainApp = document.getElementById('mainDashboardApp');
-            mainApp.classList.remove('hidden');
-            setTimeout(() => { mainApp.classList.remove('opacity-0'); }, 100);
-            
-            // Build temporary client metrics view
-            renderInteractiveChartGraphics(['Rangpur', 'Gaibandha', 'Dinajpur', 'Kurigram'], [831, 460, 448, 414]);
-        }
-
+      function applyUserRoleAuthorizations(user) {
+    const adminPanel = document.getElementById('adminDataInputPanel');
+    
+    // Only administrators or editors can inject new rows into your metrics data stream
+    if (user.role === 'ADMINISTRATOR' || user.role === 'EDITOR') {
+        adminPanel.classList.remove('hidden');
+        setTimeout(() => { 
+            adminPanel.classList.remove('scale-95', 'opacity-0'); 
+            adminPanel.classList.add('scale-100', 'opacity-100'); 
+        }, 50);
+    } else {
+        // Read-only loggers or unknown tiers keep the input control block hidden completely
+        adminPanel.classList.add('hidden');
+    }
+    
+    // Grant transition access straight past the gateway screen into the canvas application
+    document.getElementById('loginGateway').classList.add('scale-110', 'opacity-0', 'pointer-events-none');
+    const mainApp = document.getElementById('mainDashboardApp');
+    mainApp.classList.remove('hidden');
+    setTimeout(() => { mainApp.classList.remove('opacity-0'); }, 100);
+}
+       
         function renderInteractiveChartGraphics(labelsArray, dataValuesArray) {
             const canvasCtx = document.getElementById('luxuryInteractiveChart').getContext('2d');
             new Chart(canvasCtx, {
