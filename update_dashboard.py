@@ -53,10 +53,9 @@ def fetch_live_cloud_dataset():
             theme: { extend: { fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] } } }
         }
     </script>
-  except Exception as api_err:
+except Exception as api_err:
         print(f"⚠️ Cloud retrieval down: {api_err}. Reverting back to secure local fallback matrix.")
         return pd.DataFrame([{"district": "Rangpur", "gender": "Female"}])
-</head>
 <body class="bg-[#f8fafc] text-[#1e293b] dark:bg-[#0b0f19] dark:text-[#f1f5f9] min-h-screen transition-colors duration-300 flex flex-col font-sans">
 
     <div id="loginGateway" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 dark:bg-[#060913]/80 backdrop-blur-md transition-all duration-500">
