@@ -53,10 +53,9 @@ def fetch_live_cloud_dataset():
             theme: { extend: { fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] } } }
         }
     </script>
-    <style>
-        .glass-panel { background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.6); }
-        .dark .glass-panel { background: rgba(17, 24, 39, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
-    </style>
+  except Exception as api_err:
+        print(f"⚠️ Cloud retrieval down: {api_err}. Reverting back to secure local fallback matrix.")
+        return pd.DataFrame([{"district": "Rangpur", "gender": "Female"}])
 </head>
 <body class="bg-[#f8fafc] text-[#1e293b] dark:bg-[#0b0f19] dark:text-[#f1f5f9] min-h-screen transition-colors duration-300 flex flex-col font-sans">
 
