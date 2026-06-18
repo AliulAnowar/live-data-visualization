@@ -1,5 +1,5 @@
 import os
-import requests as req
+import requests
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 # 🔑 CRITICAL: PASTE YOUR EXACT SUPABASE CREDENTIALS HERE!
 # Make sure there are no missing letters, extra spaces, or broken quotes.
 # ==============================================================================
-SUPABASE_URL = "https://eghmzetfcimllmenhhei.supabase.co"  # <-- Change to your project URL
-SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVnaG16ZXRmY2ltbGxtZW5oaGVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTA1MTAsImV4cCI6MjA5NzM2NjUxMH0.FLDImmDZ7pSlgcmoufnSENOhBPQAPQ20uZfYnHUQEq4"         # <-- Paste your long anon public key here
+SUPABASE_URL = "https://ylymugpiocymibcsbnlj.supabase.co"  # <-- Change to your project URL
+SUPABASE_KEY = "YOUR_ACTUAL_ANON_PUBLIC_KEY_HERE"         # <-- Paste your long anon public key here
 
 def fetch_live_cloud_dataset():
     """
@@ -35,7 +35,7 @@ def fetch_live_cloud_dataset():
             
     try:
         print("🌐 Connecting to Supabase Cloud Core data pipeline stream...")
-        response = req.get(endpoint, headers=headers, timeout=15)
+        response = requests.get(endpoint, headers=headers, timeout=15)
         
         # If keys are wrong, this raises an exception instead of breaking the script
         response.raise_for_status()
