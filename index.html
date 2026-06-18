@@ -16,6 +16,7 @@
 </head>
 <body class="bg-[#f8fafc] text-[#1e293b] dark:bg-[#0b0f19] dark:text-[#f1f5f9] min-h-screen transition-colors duration-300 flex flex-col font-sans">
 
+    <!-- LOGIN GATEWAY FIREWALL -->
     <div id="loginGateway" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 dark:bg-[#060913]/80 backdrop-blur-md transition-all duration-500">
         <div class="w-full max-w-md p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 shadow-2xl space-y-6 text-center">
             <div class="flex flex-col items-center gap-3">
@@ -33,27 +34,55 @@
         </div>
     </div>
 
+    <!-- MAIN DASHBOARD APPLICATION WINDOW -->
     <div id="mainDashboardApp" class="opacity-0 transition-opacity duration-700 hidden flex-1 flex flex-col w-full">
+        
+        <!-- HEADER WITH LIVE STATE METRICS & EXIT BUTTON -->
         <header class="bg-white dark:bg-[#111827] border-b border-slate-200/80 dark:border-slate-800/50 px-4 sm:px-8 py-4 flex flex-col md:flex-row gap-4 items-center justify-between w-full">
             <div class="flex items-center gap-3">
                 <img src="image/logo.svg" alt="Logo" class="h-10 w-10">
                 <span class="text-xl font-bold tracking-tight dark:text-white">DataView Dashboard</span>
+                <span class="text-xs text-slate-400 border border-slate-700 px-2.5 py-0.5 rounded-full font-medium">Monitoring Workspace</span>
+                <span class="text-xs text-slate-500 font-medium">System Log Active</span>
             </div>
-            <button id="themeToggle" class="px-3 py-1.5 text-xs bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-full font-semibold">🌓 Theme</button>
+            
+            <div class="flex items-center gap-4">
+                <button id="themeToggle" class="px-3 py-1.5 text-xs bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-full font-semibold">🌓 Theme</button>
+                
+                <!-- DYNAMIC PROFILE SLOTS (From missing.png) -->
+                <div class="flex items-center gap-3 border-l border-slate-200 dark:border-slate-800 pl-4">
+                    <div class="flex flex-col text-right hidden sm:flex">
+                        <span id="displayUserName" class="text-xs font-bold text-slate-900 dark:text-slate-200">Loading...</span>
+                        <span id="displayUserRole" class="text-[10px] font-bold text-emerald-400 tracking-wider uppercase">AUTHENTICATING</span>
+                    </div>
+                    <div id="displayUserAvatar" class="h-8 w-8 rounded-full bg-emerald-500 text-slate-900 font-bold flex items-center justify-center text-xs">
+                        --
+                    </div>
+                    <!-- EXIT/LOGOUT ACTION MODULE -->
+                    <button onclick="executeSystemLogout()" class="text-xs font-semibold text-slate-400 hover:text-red-400 flex items-center gap-1 bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 rounded-lg transition ml-1">
+                        🚪 Exit
+                    </button>
+                </div>
+            </div>
         </header>
 
+        <!-- DASHBOARD CONTAINER BODY -->
         <div class="flex flex-col md:flex-row gap-6 p-4 sm:p-6 lg:p-8 w-full max-w-[1600px] mx-auto flex-1 items-start">
             <aside class="w-full md:w-64 shrink-0 space-y-6">
                 <div class="bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800/50 p-5 rounded-2xl shadow-sm">
                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Dataset Criteria Filter</label>
                     <select id="queryEngine" class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 px-3 py-2 rounded-xl text-sm focus:outline-none">
                         <option value="all">All Field Districts</option>
-                        <option value="Rangpur">Rangpur</option><option value="Gaibandha">Gaibandha</option><option value="Dinajpur">Dinajpur</option><option value="Kurigram">Kurigram</option>
+                        <option value="Rangpur">Rangpur</option>
+                        <option value="Gaibandha">Gaibandha</option>
+                        <option value="Dinajpur">Dinajpur</option>
+                        <option value="Kurigram">Kurigram</option>
                     </select>
                 </div>
             </aside>
 
             <main class="flex-1 space-y-6 w-full min-w-0">
+                <!-- DATA METRIC CARDS -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     <div class="bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-2xl p-6 shadow-sm">
                         <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Active Records</div>
@@ -69,20 +98,25 @@
                     </div>
                 </div>
 
+                <!-- ADMIN DATA INPUT CONTAINER -->
                 <div id="adminDataInputPanel" class="hidden transform transition-all duration-500 scale-95 opacity-0">
                     <div class="bg-white dark:bg-[#111827] border-2 border-dashed border-emerald-500/30 rounded-3xl p-6 shadow-md space-y-4">
                         <h3 class="text-sm font-bold uppercase tracking-wider text-emerald-500">Data Input Control Protocol (Supabase Live)</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Target Field Region</label>
-                                <select id="inputDistrict" class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 px-3 py-2 rounded-xl text-xs text-white">
-                                    <option value="Rangpur">Rangpur</option><option value="Gaibandha">Gaibandha</option><option value="Dinajpur">Dinajpur</option><option value="Kurigram">Kurigram</option>
+                                <select id="inputDistrict" class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-xl text-xs text-slate-300">
+                                    <option value="Rangpur">Rangpur</option>
+                                    <option value="Gaibandha">Gaibandha</option>
+                                    <option value="Dinajpur">Dinajpur</option>
+                                    <option value="Kurigram">Kurigram</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Gender Classification</label>
-                                <select id="inputGender" class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 px-3 py-2 rounded-xl text-xs text-white">
-                                    <option value="Female">Female Beneficiary</option><option value="Male">Male Beneficiary</option>
+                                <select id="inputGender" class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 px-3 py-2 rounded-xl text-xs text-slate-300">
+                                    <option value="Female">Female Beneficiary</option>
+                                    <option value="Male">Male Beneficiary</option>
                                 </select>
                             </div>
                             <div class="flex items-end">
@@ -94,6 +128,7 @@
                     </div>
                 </div>
 
+                <!-- GRAPHS FRAMEWORK PLOTS -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="lg:col-span-2 bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
                         <div class="relative h-64 w-full"><canvas id="luxuryInteractiveChart"></canvas></div>
@@ -106,11 +141,12 @@
         </div>
     </div>
 
+    <!-- ENGINE LOGIC INJECTION SCRIPTS -->
     <script>
         document.getElementById('themeToggle').addEventListener('click', () => { document.documentElement.classList.toggle('dark'); });
         
-        const SUPABASE_PROJECT_URL = "https://ylymugpiocymibcsbnlj.supabase.co";
-        const SUPABASE_ANON_PUBLIC_KEY = "YOUR_ACTUAL_ANON_PUBLIC_KEY_HERE";
+        const SUPABASE_PROJECT_URL = "https://eghmzetfcimllmenhhei.supabase.co";
+        const SUPABASE_ANON_PUBLIC_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVnaG16ZXRmY2ltbGxtZW5oaGVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTA1MTAsImV4cCI6MjA5NzM2NjUxMH0.FLDImmDZ7pSlgcmoufnSENOhBPQAPQ20uZfYnHUQEq4"; // Put your real anon public key here
 
         async function sendDataToSupabaseCloud() {
             const dist = document.getElementById("inputDistrict").value;
@@ -136,24 +172,69 @@
             }
         }
 
-        function executeAuthenticationWorkflow() {
-            const email = document.getElementById('authEmail').value.trim();
-            if(!email) return;
-            const isManager = (email.toLowerCase() === 'manager@mne.org');
-            const userProfile = {
-                name: email.split('@')[0],
-                role: isManager ? 'ADMINISTRATOR' : 'VIEW ONLY',
-                avatarChar: email.substring(0,2).toUpperCase()
-            };
-            applyUserRoleAuthorizations(userProfile);
+        // CONNECTS DIRECTLY TO USER_REGISTRY TABLE (Fixes bypass from user_registry _ Table Editor...mp4)
+        async function executeAuthenticationWorkflow() {
+            const emailInput = document.getElementById('authEmail').value.trim().toLowerCase();
+            
+            if (!emailInput) {
+                alert("⚠️ Access Denied: Please type an email address.");
+                return;
+            }
+
+            try {
+                // Fetch dynamic role tier profiles from Supabase user_registry
+                const response = await fetch(`${SUPABASE_PROJECT_URL}/rest/v1/user_registry?email=eq.${encodeURIComponent(emailInput)}&select=*`, {
+                    method: "GET",
+                    headers: {
+                        "apikey": SUPABASE_ANON_PUBLIC_KEY,
+                        "Authorization": `Bearer ${SUPABASE_ANON_PUBLIC_KEY}`
+                    }
+                });
+
+                if (!response.ok) throw new Error("Database network check dropped.");
+                
+                const userData = await response.json();
+
+                // CRITICAL FIREWALL ELEMENT: Stops execution if the array is empty (Fixes "aliul" bug)
+                if (!userData || userData.length === 0) {
+                    alert("❌ Access Denied: This credentials matrix is not registered within the system directory.");
+                    return; 
+                }
+
+                // Map successful match metrics
+                const verifiedUser = userData[0];
+                const userProfile = {
+                    name: verifiedUser.full_name,
+                    role: verifiedUser.role_tier, // 'ADMINISTRATOR', 'EDITOR', or 'LOGGER'
+                    avatarChar: verifiedUser.full_name.substring(0, 2).toUpperCase()
+                };
+
+                // Update UI Header Content elements dynamically
+                document.getElementById('displayUserName').textContent = userProfile.name;
+                document.getElementById('displayUserRole').textContent = userProfile.role;
+                document.getElementById('displayUserAvatar').textContent = userProfile.avatarChar;
+
+                // Fire the presentation layout sequences (YOUR REFRESHED CODE CAPTURED IN STAGE)
+                applyUserRoleAuthorizations(userProfile);
+
+            } catch (err) {
+                console.error(err);
+                alert("🚨 Identity Registry Handshake Timeout. Please try again.");
+            }
         }
 
         function applyUserRoleAuthorizations(user) {
             const adminPanel = document.getElementById('adminDataInputPanel');
-            if (user.role === 'ADMINISTRATOR') {
+            
+            // Show Admin Panel control if clearance matches
+            if (user.role === 'ADMINISTRATOR' || user.role === 'EDITOR') {
                 adminPanel.classList.remove('hidden');
                 setTimeout(() => { adminPanel.classList.remove('scale-95', 'opacity-0'); adminPanel.classList.add('scale-100', 'opacity-100'); }, 50);
+            } else {
+                adminPanel.classList.add('hidden');
             }
+            
+            // Your transition elements preserved perfectly from "this code need to delete.png"
             document.getElementById('loginGateway').classList.add('scale-110', 'opacity-0', 'pointer-events-none');
             const mainApp = document.getElementById('mainDashboardApp');
             mainApp.classList.remove('hidden');
@@ -173,6 +254,22 @@
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
+        }
+
+        // BULLETPROOF SYSTEM LOGOUT ROUTINE
+        function executeSystemLogout() {
+            // Re-lock gateway window interface layout state
+            const gateway = document.getElementById('loginGateway');
+            gateway.classList.remove('scale-110', 'opacity-0', 'pointer-events-none');
+            
+            // Hide main canvas panels entirely
+            const mainApp = document.getElementById('mainDashboardApp');
+            mainApp.classList.add('hidden');
+            mainApp.classList.add('opacity-0');
+            
+            // Flush input parameters safely
+            document.getElementById('authEmail').value = "";
+            alert("🔒 Session terminated safely. Identity access tokens flushed.");
         }
     </script>
 </body>
