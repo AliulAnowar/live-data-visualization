@@ -1,9 +1,8 @@
 name: Auto Update M&E Dashboard Data
 
 on:
-  push:
-    paths:
-      - 'NGO_Project_MNE_Dataset_2000.xlsx'
+repository_dispatch:
+types: [supabase_row_inserted]
   workflow_dispatch: # Allows you to manually trigger updates with a single click button
 
 jobs:
