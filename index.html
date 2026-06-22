@@ -25,7 +25,7 @@
                 <p class="text-xs text-slate-400 max-w-xs mx-auto">Authorize parameters using your verified corporate access profile credentials.</p>
             </div>
             
-            <form id="login-form" onsubmit="handleUserLogin(event)" class="space-y-4 text-left">
+           <form id="login-form" onsubmit="handleUserLogin(event)" class="space-y-4 text-left">
                 <div>
                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Corporate Email Address</label>
                     <input type="email" id="login-email" value="balarhat.court@demo.org" required
@@ -173,13 +173,16 @@ const supabase = supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_PUBLI
         let currentUserProfile = null;
 
         // 3. MAIN WORKSPACE LOGIN AUTH ENTRANCE ENGINE
-        async function handleUserLogin(event) {
-            event.preventDefault();
-            
-            const emailInput = document.getElementById('login-email').value.trim().toLowerCase();
-            const loginBtn = document.getElementById('btn-login');
-            const errorBox = document.getElementById('auth-error');
-            
+       // Ensure 'event' is received inside the function signature parameter
+async function handleUserLogin(event) {
+    // 💡 Add this line at the very top of your function block!
+    if (event) event.preventDefault(); 
+    
+    const emailInput = document.getElementById('login-email').value.trim().toLowerCase();
+    const loginBtn = document.getElementById('btn-login');
+    const errorBox = document.getElementById('auth-error');
+    
+    // ... rest of your code remains exactly the same            
             if (loginBtn) {
                 loginBtn.disabled = true;
                 loginBtn.innerText = "Verifying Workspace Matrix...";
