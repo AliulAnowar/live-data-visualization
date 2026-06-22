@@ -378,6 +378,74 @@ async function loadUpazilas(districtId) {
         upazilaSelect.appendChild(option);
     });
 }
+        // Global State Storage to preserve role settings during session runtime
+let currentUserProfile = null;
+
+async function handleUserLogin(event) {
+    event.preventDefault(); // Stop page from refreshing
+    
+    const emailInput = document.getElementById('login-email').value.trim().toLowerCase();
+    const loginBtn = document.getElementById('btn-login');
+    const errorBox = document.getElementById('auth-error');
+    
+    // UI Loading state
+    loginBtn.disabled = true;
+    loginBtn.innerText = "Verifying Credentials...";
+    errorBox.classList.add('hidden');
+
+    try {
+        // Query our app_users table to fetch role configuration variables
+        const { data: userProfile, error } = await supabase
+            .from('app_users')
+            .select(`
+                id, email, user_name, role, ngo_id, district_id, upazila_id, union_id,
+                ngos(name), districts(name), upazilas(name), unions(name)
+            `)
+            .eq('email', emailInput)
+            .maybeSingle(); // Prevents multiple row crashes
+
+        if (error) throw error;
+
+        if (!userProfile) {
+            throw new Error("Access Denied: This Email ID is not registered in the AVCB database.");
+        }
+
+        // Cache your verified profile state in app storage memory
+        currentUserProfile = userProfile;
+        
+        // Hide Auth Gate UI, and trigger the layout generator matrix
+        document.getElementById('auth-container').classList.add('hidden');
+        initializeDashboardLayout(currentUserProfile);
+
+    } catch (err) {
+        errorBox.innerText = err.message;
+        errorBox.classList.remove('hidden');
+        loginBtn.disabled = false;
+        loginBtn.innerText = "Verify Identity & Enter";
+    }
+}
+
+// 🗺️ THE DASHBOARD GATEWAY ENGINE
+function initializeDashboardLayout(profile) {
+    console.log("Routing session for authenticated account profile:", profile);
+    
+    // Capture structural elements
+    const roleTitle = profile.role; // e.g. UNION_OFFICER, HEAD_ME
+    
+    // Global Greeting Update
+    alert(`Welcome back ${profile.user_name}! Role Unlocked: ${roleTitle}`);
+
+    // EXECUTING THE SECURITY VIEWS SYSTEM
+    if (roleTitle === 'UNION_OFFICER') {
+        renderUnionFormInterface();      // Loads data collection tools exclusively
+    } else if (roleTitle === 'DISTRICT_ME') {
+        renderDistrictViewerInterface(); // Read-only dashboard visualizations
+    } else if (roleTitle === 'HEAD_ME') {
+        renderManagerInterface(true);    // View + Edit tools with justification chatboxes
+    } else if (roleTitle === 'UNDP_MASTER') {
+        renderMasterInterface();         // Master cross-NGO view bypass triggers
+    }
+}
     </script>
 </body>
 </html>
