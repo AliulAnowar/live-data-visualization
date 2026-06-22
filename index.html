@@ -380,7 +380,6 @@ async function loadUpazilas(districtId) {
 }
         // Global State Storage to preserve role settings during session runtime
 let currentUserProfile = null;
-
 async function handleUserLogin(event) {
     event.preventDefault(); // Stop page from refreshing
     
@@ -388,43 +387,90 @@ async function handleUserLogin(event) {
     const loginBtn = document.getElementById('btn-login');
     const errorBox = document.getElementById('auth-error');
     
-    // UI Loading state
-    loginBtn.disabled = true;
-    loginBtn.innerText = "Verifying Credentials...";
-    errorBox.classList.add('hidden');
+    if (loginBtn) {
+        loginBtn.disabled = true;
+        loginBtn.innerText = "Verifying Workspace Matrix...";
+    }
 
     try {
-        // Query our app_users table to fetch role configuration variables
+        // Relational JOIN payload that pulls exact geo strings from related tables
         const { data: userProfile, error } = await supabase
             .from('app_users')
             .select(`
-                id, email, user_name, role, ngo_id, district_id, upazila_id, union_id,
-                ngos(name), districts(name), upazilas(name), unions(name)
+                id, 
+                email, 
+                user_name, 
+                role,
+                ngo_id,
+                district_id,
+                upazila_id,
+                union_id
             `)
             .eq('email', emailInput)
-            .maybeSingle(); // Prevents multiple row crashes
+            .maybeSingle();
 
         if (error) throw error;
 
         if (!userProfile) {
-            throw new Error("Access Denied: This Email ID is not registered in the AVCB database.");
+            alert("❌ Access Denied: This credential footprint is not registered inside our workspace directory.");
+            if (loginBtn) {
+                loginBtn.disabled = false;
+                loginBtn.innerText = "Continue with Google Sign-In";
+            }
+            return;
         }
 
-        // Cache your verified profile state in app storage memory
+        // Cache session context locally
         currentUserProfile = userProfile;
         
-        // Hide Auth Gate UI, and trigger the layout generator matrix
-        document.getElementById('auth-container').classList.add('hidden');
+        // Hide Login Card UI
+        const authContainer = document.getElementById('auth-container');
+        if (authContainer) authContainer.classList.add('hidden');
+        
+        // Execute Dashboard Initialization and pass the logged-in profile details
         initializeDashboardLayout(currentUserProfile);
 
     } catch (err) {
-        errorBox.innerText = err.message;
-        errorBox.classList.remove('hidden');
-        loginBtn.disabled = false;
-        loginBtn.innerText = "Verify Identity & Enter";
+        console.error("Auth routing failure:", err);
+        if (errorBox) {
+            errorBox.innerText = err.message;
+            errorBox.classList.remove('hidden');
+        }
+        if (loginBtn) {
+            loginBtn.disabled = false;
+            loginBtn.innerText = "Continue with Google Sign-In";
+        }
     }
 }
 
+// 🗺️ CONNECTING CRITERIA METRICS FILTERING TO LIVE RECORDS
+async function updateDashboardMetrics(selectedDistrictName) {
+    console.log("Filtering metrics for target region:", selectedDistrictName);
+    
+    // Base data query targeting your live rows
+    let query = supabase.from('ngo_project_records').select('*', { count: 'exact' });
+    
+    // Apply dynamic filter criteria only if a specific district is picked
+    if (selectedDistrictName && selectedDistrictName !== 'All Field Districts') {
+        query = query.eq('district', selectedDistrictName); [cite: 1]
+    }
+    
+    const { data, count, error } = await query;
+    if (error) return console.error("Metrics query error:", error.message);
+
+    // Update your dashboard metric counters dynamically
+    document.getElementById('total-records-display').innerText = count;
+    
+    // Calculate and render gender percentages based on the filtered rows data
+    if (data && data.length > 0) {
+        const females = data.filter(r => r.gender === 'Female').length; [cite: 1]
+        const males = data.filter(r => r.gender === 'Male').length; [cite: 1]
+        const total = data.length;
+        
+        document.getElementById('female-percentage-display').innerText = ((females / total) * 100).toFixed(1) + '%';
+        document.getElementById('male-percentage-display').innerText = ((males / total) * 100).toFixed(1) + '%';
+    }
+}
 // 🗺️ THE DASHBOARD GATEWAY ENGINE
 function initializeDashboardLayout(profile) {
     console.log("Routing session for authenticated account profile:", profile);
