@@ -312,6 +312,51 @@
             document.getElementById('authEmail').value = "";
             alert("🔒 Workspace session closed. Identity metrics flushed successfully.");
         }
+        // 1. Initializing your geography fetch commands
+async function loadDistricts() {
+    const { data: districts, error } = await supabase
+        .from('districts')
+        .select('id, name, prefix');
+
+    if (error) {
+        console.error("Error loading districts:", error.message);
+        return;
+    }
+
+    const districtSelect = document.getElementById('district-dropdown');
+    districtSelect.innerHTML = '<option value="">-- Select District --</option>';
+    
+    districts.forEach(dist => {
+        let option = document.createElement('option');
+        option.value = dist.id;
+        option.textContent = dist.name;
+        districtSelect.appendChild(option);
+    });
+}
+
+// 2. Cascading Step: Load Upazilas ONLY when a District is chosen
+async function loadUpazilas(districtId) {
+    const upazilaSelect = document.getElementById('upazila-dropdown');
+    if (!districtId) {
+        upazilaSelect.innerHTML = '<option value="">-- Select Upazila --</option>';
+        return;
+    }
+
+    const { data: upazilas, error } = await supabase
+        .from('upazilas')
+        .select('id, name, prefix')
+        .eq('district_id', districtId); // Security & Sorting filter!
+
+    if (error) return console.error(error);
+
+    upazilaSelect.innerHTML = '<option value="">-- Select Upazila --</option>';
+    upazilas.forEach(upz => {
+        let option = document.createElement('option');
+        option.value = upz.id;
+        option.textContent = upz.name;
+        upazilaSelect.appendChild(option);
+    });
+}
     </script>
 </body>
 </html>
