@@ -160,8 +160,7 @@ const SUPABASE_PROJECT_URL = "https://eghmzetfcimllmenhhei.supabase.co";
 const SUPABASE_ANON_PUBLIC_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVnaG16ZXRmY2ltbGxtZW5oaGVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTA1MTAsImV4cCI6MjA5NzM2NjUxMH0.FLDImmDZ7pSlgcmoufnSENOhBPQAPQ20uZfYnHUQEq4";
 
 // 2. INITIALIZE CLIENT NATIVE WINDOW NODE
-const supabase = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_PUBLIC_KEY);
-
+const supabase = supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_PUBLIC_KEY);
 // State Tracking Cache variables
 let currentUserProfile = null;
 
@@ -328,6 +327,9 @@ function executeSystemLogout() {
     
     currentUserProfile = null;
     alert("🔒 Workspace session closed. Identity metrics flushed successfully.");
+}
+        async function sendDataToSupabaseCloud() {
+    alert("System Status: Data injection module ready. Hooking payload values...");
 }
     </script>
 </body>
