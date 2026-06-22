@@ -6,6 +6,7 @@
     <title>M&E Advanced Enterprise Workspace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
@@ -20,21 +21,25 @@
         <div class="w-full max-w-md p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 shadow-2xl space-y-6 text-center">
             <div class="flex flex-col items-center gap-3">
                 <img src="image/logo.svg" alt="M&E Logo" class="h-16 w-16 object-contain" onerror="this.src='https://placehold.co/64x64?text=M%26E'">
-                <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white mt-1">M&E Enterprise Portal</h1>
-                <p class="text-xs text-slate-400 max-w-xs mx-auto">Authorize your parameters using Google Identity Access Control Services.</p>
+                <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white mt-1">AVCB M&E Enterprise Portal</h1>
+                <p class="text-xs text-slate-400 max-w-xs mx-auto">Authorize parameters using your verified corporate access profile credentials.</p>
             </div>
-            <div class="space-y-3 text-left">
-                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Corporate Email Address</label>
-                <input type="email" id="authEmail" value="manager@mne.org" class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 px-4 py-2.5 rounded-xl text-sm focus:outline-none">
-            </div>
-            <button onclick="executeAuthenticationWorkflow()" class="w-full bg-slate-900 dark:bg-emerald-500 hover:opacity-90 text-white font-semibold py-3 px-4 rounded-xl text-sm transition">
-                Continue with Google Sign-In
-            </button>
+            
+            <form id="login-form" onsubmit="handleUserLogin(event)" class="space-y-4 text-left">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Corporate Email Address</label>
+                    <input type="email" id="login-email" value="balarhat.court@demo.org" required
+                           class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 px-4 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <button type="submit" id="btn-login" class="w-full bg-slate-900 dark:bg-emerald-500 hover:opacity-90 text-white font-semibold py-3 px-4 rounded-xl text-sm transition shadow-md">
+                    Verify Identity & Enter Workspace
+                </button>
+            </form>
+            <div id="auth-error" class="hidden mt-4 p-3 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 text-xs rounded-xl text-center font-medium border border-red-200 dark:border-red-900/50"></div>
         </div>
     </div>
 
     <div id="mainDashboardApp" class="opacity-0 transition-opacity duration-700 hidden flex-1 flex flex-col w-full">
-        
         <header class="bg-white dark:bg-[#111827] border-b border-slate-200/80 dark:border-slate-800/50 px-4 sm:px-8 py-4 flex flex-col md:flex-row gap-4 items-center justify-between w-full">
             <div class="flex items-center gap-3">
                 <img src="image/logo.svg" alt="Logo" class="h-10 w-10" onerror="this.src='https://placehold.co/40x40?text=ME'">
@@ -45,21 +50,15 @@
             
             <div class="flex items-center gap-4">
                 <button id="themeToggle" class="px-3 py-1.5 text-xs bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-full font-semibold">🌓 Theme</button>
-                
                 <div class="flex items-center gap-3 border-l border-slate-200 dark:border-slate-800 pl-4">
                     <div class="flex flex-col text-right hidden sm:flex">
                         <div class="flex items-center gap-1">
                             <span id="displayUserName" class="text-xs font-bold text-slate-900 dark:text-slate-200">Loading User...</span>
-                            <span class="text-[10px] text-slate-400 font-light">(Google Authed)</span>
                         </div>
                         <span id="displayUserRole" class="text-[10px] font-bold text-emerald-400 tracking-wider uppercase">AUTHENTICATING</span>
                     </div>
-                    <div id="displayUserAvatar" class="h-8 w-8 rounded-full bg-emerald-500 text-slate-900 font-bold flex items-center justify-center text-xs">
-                        --
-                    </div>
-                    <button onclick="executeSystemLogout()" class="text-xs font-semibold text-slate-400 hover:text-red-400 flex items-center gap-1 bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 rounded-lg transition ml-1">
-                        🚪 Exit
-                    </button>
+                    <div id="displayUserAvatar" class="h-8 w-8 rounded-full bg-emerald-500 text-slate-900 font-bold flex items-center justify-center text-xs">--</div>
+                    <button onclick="executeSystemLogout()" class="text-xs font-semibold text-slate-400 hover:text-red-400 flex items-center gap-1 bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 rounded-lg transition ml-1">🚪 Exit</button>
                 </div>
             </div>
         </header>
@@ -92,25 +91,24 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     <div class="bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-2xl p-6 shadow-sm">
                         <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Active Records</div>
-                        <div class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight mt-2">2153</div>
+                        <div id="total-records-display" class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight mt-2">2153</div>
                         <div class="text-[10px] text-emerald-400 mt-1 font-medium">✓ Verified Dataset Integrity Layer</div>
                     </div>
                     <div class="bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-2xl p-6 shadow-sm">
                         <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Female Demographics</div>
-                        <div class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight mt-2">60.1%</div>
-                        <div class="text-[10px] text-slate-500 mt-1">Target sample: 1294 active rows</div>
+                        <div id="female-percentage-display" class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight mt-2">60.1%</div>
+                        <div class="text-[10px] text-slate-500 mt-1">Target sample pool calculation</div>
                     </div>
                     <div class="bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-2xl p-6 shadow-sm">
                         <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Male Demographics</div>
-                        <div class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight mt-2">39.9%</div>
-                        <div class="text-[10px] text-slate-500 mt-1">Target sample: 859 active rows</div>
+                        <div id="male-percentage-display" class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight mt-2">39.9%</div>
+                        <div class="text-[10px] text-slate-500 mt-1">Target sample pool calculation</div>
                     </div>
                 </div>
 
                 <div id="adminDataInputPanel" class="hidden transform transition-all duration-500 scale-95 opacity-0">
                     <div class="bg-white dark:bg-[#111827] border border-dashed border-emerald-500/30 rounded-3xl p-6 shadow-md space-y-4">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-2">⚡ Data Input Control Protocol (Admin Mode Enabled)</h3>
-                        <p class="text-xs text-slate-400">Input new tracking variables below to dynamically mutate session database rows, trigger automated chart recalculations, and run metric aggregates.</p>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Target Field Region</label>
@@ -143,7 +141,6 @@
                             <canvas id="luxuryInteractiveChart"></canvas>
                         </div>
                     </div>
-                    
                     <div class="bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-3xl p-6 flex flex-col justify-between shadow-sm">
                         <div>
                             <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Regional Distribution Metrics</h4>
@@ -154,126 +151,86 @@
                         </div>
                     </div>
                 </div>
-                <div id="auth-container" class="flex items-center justify-center min-h-screen bg-gray-100">
-    <div class="w-full max-w-md p-8 bg-white rounded-xl shadow-lg border border-gray-200">
-        <div class="text-center mb-6">
-            <h2 class="text-2xl font-bold text-gray-800">AVCB M&E Portal Portal</h2>
-            <p class="text-sm text-gray-500 mt-1">Provide your registered unique Email ID to access your dashboard tier.</p>
-        </div>
-        
-        <form id="login-form" onsubmit="handleUserLogin(event)">
-            <div class="mb-4">
-                <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2">Registered Email Address</label>
-                <input type="email" id="login-email" required placeholder="court.officer@demo.org" 
-                       class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700">
-            </div>
-            <button type="submit" id="btn-login"
-                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200">
-                Verify Identity & Enter
-            </button>
-        </form>
-        <div id="auth-error" class="hidden mt-4 p-3 bg-red-50 text-red-600 text-sm rounded-lg text-center font-medium border border-red-200"></div>
-    </div>
-</div>
             </main>
         </div>
     </div>
 
     <script>
-        // Responsive theme manager
-        document.getElementById('themeToggle').addEventListener('click', () => { document.documentElement.classList.toggle('dark'); });
+        // Theme execution handler
+        document.getElementById('themeToggle').addEventListener('click', () => { 
+            document.documentElement.classList.toggle('dark');
+        });
         
-        // Supabase Infrastructure Gateway Mapping Configuration
+        // 1. SUPABASE CONNECTION PARAMETERS
         const SUPABASE_PROJECT_URL = "https://eghmzetfcimllmenhhei.supabase.co";
-        const SUPABASE_ANON_PUBLIC_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVnaG16ZXRmY2ltbGxtZW5oaGVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTA1MTAsImV4cCI6MjA5NzM2NjUxMH0.FLDImmDZ7pSlgcmoufnSENOhBPQAPQ20uZfYnHUQEq4"; // <-- Make sure your copied key from Step 2 goes inside here!
+        const SUPABASE_ANON_PUBLIC_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVnaG16ZXRmY2ltbGxtZW5oaGVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTA1MTAsImV4cCI6MjA5NzM2NjUxMH0.FLDImmDZ7pSlgcmoufnSENOhBPQAPQ20uZfYnHUQEq4";
+        
+        // 2. INITIALIZE CLIENT FRAMEWORK NODE (THE MAIN CRITICAL MISSING FIX)
+        const supabase = ::supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_PUBLIC_KEY);
 
-        // LIVE WRITE REQUEST ENGINE (POSTS RAW PARAMETERS BACK INTO SUPABASE CLOUD)
-        async function sendDataToSupabaseCloud() {
-            const dist = document.getElementById("inputDistrict").value;
-            const gend = document.getElementById("inputGender").value;
-            
-            const payload = { 
-                district: dist, 
-                gender: gend, 
-                project_phase: "Phase 1", 
-                beneficiary_age: 32, 
-                training_status: "Completed" 
-            };
-            
-            try {
-                const response = await fetch(`${SUPABASE_PROJECT_URL}/rest/v1/ngo_project_records`, {
-                    method: "POST",
-                    headers: {
-                        "apikey": SUPABASE_ANON_PUBLIC_KEY,
-                        "Authorization": `Bearer ${SUPABASE_ANON_PUBLIC_KEY}`,
-                        "Content-Type": "application/json",
-                        "Prefer": "return=minimal"
-                    },
-                    body: JSON.stringify(payload)
-                });
-                if (!response.ok) throw new Error("Network transaction rejected.");
-                alert("🎉 Success! Row saved directly into your Supabase Cloud Instance Database.");
-            } catch (err) {
-                alert("❌ Post failed: Check RLS configurations or table schema keys inside your Supabase dashboard.");
-            }
-        }
+        // State Tracking Cache variables
+        let currentUserProfile = null;
 
-        // FIREWALL SECURE IDENTITY ACCESS ROUTINE
-        async function executeAuthenticationWorkflow() {
-            const emailInput = document.getElementById('authEmail').value.trim().toLowerCase();
+        // 3. MAIN WORKSPACE LOGIN AUTH ENTRANCE ENGINE
+        async function handleUserLogin(event) {
+            event.preventDefault();
             
-            if (!emailInput) {
-                alert("⚠️ Access Denied: Field parameters cannot remain empty.");
-                return;
+            const emailInput = document.getElementById('login-email').value.trim().toLowerCase();
+            const loginBtn = document.getElementById('btn-login');
+            const errorBox = document.getElementById('auth-error');
+            
+            if (loginBtn) {
+                loginBtn.disabled = true;
+                loginBtn.innerText = "Verifying Workspace Matrix...";
             }
+            if (errorBox) errorBox.classList.add('hidden');
 
             try {
-                // Fetch dynamic access permissions row values from user_registry
-                const response = await fetch(`${SUPABASE_PROJECT_URL}/rest/v1/user_registry?email=eq.${encodeURIComponent(emailInput)}&select=*`, {
-                    method: "GET",
-                    headers: {
-                        "apikey": SUPABASE_ANON_PUBLIC_KEY,
-                        "Authorization": `Bearer ${SUPABASE_ANON_PUBLIC_KEY}`
-                    }
-                });
+                // Fetch dynamic access permissions profile row from our unified secure app_users table
+                const { data: userProfile, error } = await supabase
+                    .from('app_users')
+                    .select('id, email, user_name, role, ngo_id, district_id, upazila_id, union_id')
+                    .eq('email', emailInput)
+                    .maybeSingle();
 
-                if (!response.ok) throw new Error("Database validation tunnel rejected.");
-                
-                const userData = await response.json();
+                if (error) throw error;
 
-                // DYNAMIC FIREWALL BLOCK: Bounce immediately if user footprint isn't recorded 
-                if (!userData || userData.length === 0) {
-                    alert("❌ Access Denied: This credential footprint is not registered inside our workspace directory.");
-                    return; 
+                if (!userProfile) {
+                    throw new Error("Access Denied: This credential footprint is not registered inside our workspace registry.");
                 }
 
-                // Build session identity profile out of the returned table keys
-                const activeSessionUser = userData[0];
-                const userProfile = {
-                    name: activeSessionUser.full_name,
-                    role: activeSessionUser.role_tier, // Maps 'ADMINISTRATOR', 'EDITOR', or 'LOGGER' strings
-                    avatarChar: activeSessionUser.full_name.substring(0, 2).toUpperCase()
-                };
-
-                // Inject identity parameters seamlessly into header workspace nodes
-                document.getElementById('displayUserName').textContent = userProfile.name;
-                document.getElementById('displayUserRole').textContent = userProfile.role;
-                document.getElementById('displayUserAvatar').textContent = userProfile.avatarChar;
-
-                // Evaluate features based on roles
-                applyUserRoleAuthorizations(userProfile);
+                // Cache active configuration profile locally
+                currentUserProfile = userProfile;
+                
+                // Fire Dashboard Display Transitions
+                initializeDashboardLayout(currentUserProfile);
 
             } catch (err) {
-                console.error(err);
-                alert("🚨 Registry authentication timeout. Please check your internet connection or verify your public anon key value.");
+                console.error("Auth routing failure:", err);
+                if (errorBox) {
+                    errorBox.innerText = err.message;
+                    errorBox.classList.remove('hidden');
+                }
+                if (loginBtn) {
+                    loginBtn.disabled = false;
+                    loginBtn.innerText = "Verify Identity & Enter Workspace";
+                }
             }
         }
 
-        function applyUserRoleAuthorizations(user) {
+        // 4. THE DASHBOARD VIEWPORT MATRIX SYSTEM 
+        function initializeDashboardLayout(profile) {
+            console.log("Routing session for account profile parameters:", profile);
+            
+            // Map configuration labels smoothly to layout nodes
+            document.getElementById('displayUserName').textContent = profile.user_name;
+            document.getElementById('displayUserRole').textContent = profile.role;
+            document.getElementById('displayUserAvatar').textContent = profile.user_name.substring(0, 2).toUpperCase();
+
             const adminPanel = document.getElementById('adminDataInputPanel');
             
-            // Allow dynamic write inputs only for managers or writers
-            if (user.role === 'ADMINISTRATOR' || user.role === 'EDITOR') {
+            // Allow dynamic UI write interfaces for manager/master classes
+            if (profile.role === 'HEAD_ME' || profile.role === 'UNDP_MASTER') {
                 adminPanel.classList.remove('hidden');
                 setTimeout(() => { 
                     adminPanel.classList.remove('scale-95', 'opacity-0'); 
@@ -282,18 +239,42 @@
             } else {
                 adminPanel.classList.add('hidden');
             }
-            
-            // 🎬 REMOVAL ANIMATION GRID HELD SAFELY FROM "this code need to delete.png"
+
+            // Slide out the gate shield overlay window panel smoothly
             document.getElementById('loginGateway').classList.add('scale-110', 'opacity-0', 'pointer-events-none');
+            
             const mainApp = document.getElementById('mainDashboardApp');
             mainApp.classList.remove('hidden');
             setTimeout(() => { mainApp.classList.remove('opacity-0'); }, 100);
-            
-            // Render frontend chart calculations
+
+            // Fetch live operational records indicators
+            updateDashboardMetrics('All Field Districts');
             renderInteractiveChartGraphics(['Rangpur', 'Gaibandha', 'Dinajpur', 'Kurigram'], [831, 460, 448, 414]);
         }
 
-        // GRAPHICS CHART BUILDER
+        // LIVE DATA RECORD COUNTERS INTEGRITY ENGINE
+        async function updateDashboardMetrics(selectedDistrictName) {
+            let query = supabase.from('ngo_project_records').select('*', { count: 'exact' });
+            
+            if (selectedDistrictName && selectedDistrictName !== 'All Field Districts') {
+                query = query.eq('district', selectedDistrictName);
+            }
+            
+            const { data, count, error } = await query;
+            if (error) return console.error("Metrics engine query rejection:", error.message);
+
+            document.getElementById('total-records-display').innerText = count;
+            
+            if (data && data.length > 0) {
+                const females = data.filter(r => r.gender === 'Female').length;
+                const total = data.length;
+                
+                document.getElementById('female-percentage-display').innerText = ((females / total) * 100).toFixed(1) + '%';
+                document.getElementById('male-percentage-display').innerText = (((total - females) / total) * 100).toFixed(1) + '%';
+            }
+        }
+
+        // CHARTS GRAPHICS CONTROLLER Builder
         function renderInteractiveChartGraphics(labelsArray, dataValuesArray) {
             const canvasCtx = document.getElementById('luxuryInteractiveChart').getContext('2d');
             new Chart(canvasCtx, {
@@ -319,179 +300,17 @@
             });
         }
 
-        // TERMINATE SESSION ACCESS DISCONNECT ROUTINE (EXIT BUTTON)
+        // EXIT APPLICATION AND TERMINATE SESSION PARAMETERS
         function executeSystemLogout() {
-            // Relock and slide down the entrance portal window panel shield
             const gateway = document.getElementById('loginGateway');
             gateway.classList.remove('scale-110', 'opacity-0', 'pointer-events-none');
             
-            // Shut off the core client display engine window 
             const mainApp = document.getElementById('mainDashboardApp');
             mainApp.classList.add('hidden', 'opacity-0');
             
-            // Wipe input values cleanly to guard device handovers
-            document.getElementById('authEmail').value = "";
+            currentUserProfile = null;
             alert("🔒 Workspace session closed. Identity metrics flushed successfully.");
         }
-        // 1. Initializing your geography fetch commands
-async function loadDistricts() {
-    const { data: districts, error } = await supabase
-        .from('districts')
-        .select('id, name, prefix');
-
-    if (error) {
-        console.error("Error loading districts:", error.message);
-        return;
-    }
-
-    const districtSelect = document.getElementById('district-dropdown');
-    districtSelect.innerHTML = '<option value="">-- Select District --</option>';
-    
-    districts.forEach(dist => {
-        let option = document.createElement('option');
-        option.value = dist.id;
-        option.textContent = dist.name;
-        districtSelect.appendChild(option);
-    });
-}
-
-// 2. Cascading Step: Load Upazilas ONLY when a District is chosen
-async function loadUpazilas(districtId) {
-    const upazilaSelect = document.getElementById('upazila-dropdown');
-    if (!districtId) {
-        upazilaSelect.innerHTML = '<option value="">-- Select Upazila --</option>';
-        return;
-    }
-
-    const { data: upazilas, error } = await supabase
-        .from('upazilas')
-        .select('id, name, prefix')
-        .eq('district_id', districtId); // Security & Sorting filter!
-
-    if (error) return console.error(error);
-
-    upazilaSelect.innerHTML = '<option value="">-- Select Upazila --</option>';
-    upazilas.forEach(upz => {
-        let option = document.createElement('option');
-        option.value = upz.id;
-        option.textContent = upz.name;
-        upazilaSelect.appendChild(option);
-    });
-}
-        // Global State Storage to preserve role settings during session runtime
-let currentUserProfile = null;
-async function handleUserLogin(event) {
-    event.preventDefault(); // Stop page from refreshing
-    
-    const emailInput = document.getElementById('login-email').value.trim().toLowerCase();
-    const loginBtn = document.getElementById('btn-login');
-    const errorBox = document.getElementById('auth-error');
-    
-    if (loginBtn) {
-        loginBtn.disabled = true;
-        loginBtn.innerText = "Verifying Workspace Matrix...";
-    }
-
-    try {
-        // Relational JOIN payload that pulls exact geo strings from related tables
-        const { data: userProfile, error } = await supabase
-            .from('app_users')
-            .select(`
-                id, 
-                email, 
-                user_name, 
-                role,
-                ngo_id,
-                district_id,
-                upazila_id,
-                union_id
-            `)
-            .eq('email', emailInput)
-            .maybeSingle();
-
-        if (error) throw error;
-
-        if (!userProfile) {
-            alert("❌ Access Denied: This credential footprint is not registered inside our workspace directory.");
-            if (loginBtn) {
-                loginBtn.disabled = false;
-                loginBtn.innerText = "Continue with Google Sign-In";
-            }
-            return;
-        }
-
-        // Cache session context locally
-        currentUserProfile = userProfile;
-        
-        // Hide Login Card UI
-        const authContainer = document.getElementById('auth-container');
-        if (authContainer) authContainer.classList.add('hidden');
-        
-        // Execute Dashboard Initialization and pass the logged-in profile details
-        initializeDashboardLayout(currentUserProfile);
-
-    } catch (err) {
-        console.error("Auth routing failure:", err);
-        if (errorBox) {
-            errorBox.innerText = err.message;
-            errorBox.classList.remove('hidden');
-        }
-        if (loginBtn) {
-            loginBtn.disabled = false;
-            loginBtn.innerText = "Continue with Google Sign-In";
-        }
-    }
-}
-
-// 🗺️ CONNECTING CRITERIA METRICS FILTERING TO LIVE RECORDS
-async function updateDashboardMetrics(selectedDistrictName) {
-    console.log("Filtering metrics for target region:", selectedDistrictName);
-    
-    // Base data query targeting your live rows
-    let query = supabase.from('ngo_project_records').select('*', { count: 'exact' });
-    
-    // Apply dynamic filter criteria only if a specific district is picked
-    if (selectedDistrictName && selectedDistrictName !== 'All Field Districts') {
-        query = query.eq('district', selectedDistrictName); [cite: 1]
-    }
-    
-    const { data, count, error } = await query;
-    if (error) return console.error("Metrics query error:", error.message);
-
-    // Update your dashboard metric counters dynamically
-    document.getElementById('total-records-display').innerText = count;
-    
-    // Calculate and render gender percentages based on the filtered rows data
-    if (data && data.length > 0) {
-        const females = data.filter(r => r.gender === 'Female').length; [cite: 1]
-        const males = data.filter(r => r.gender === 'Male').length; [cite: 1]
-        const total = data.length;
-        
-        document.getElementById('female-percentage-display').innerText = ((females / total) * 100).toFixed(1) + '%';
-        document.getElementById('male-percentage-display').innerText = ((males / total) * 100).toFixed(1) + '%';
-    }
-}
-// 🗺️ THE DASHBOARD GATEWAY ENGINE
-function initializeDashboardLayout(profile) {
-    console.log("Routing session for authenticated account profile:", profile);
-    
-    // Capture structural elements
-    const roleTitle = profile.role; // e.g. UNION_OFFICER, HEAD_ME
-    
-    // Global Greeting Update
-    alert(`Welcome back ${profile.user_name}! Role Unlocked: ${roleTitle}`);
-
-    // EXECUTING THE SECURITY VIEWS SYSTEM
-    if (roleTitle === 'UNION_OFFICER') {
-        renderUnionFormInterface();      // Loads data collection tools exclusively
-    } else if (roleTitle === 'DISTRICT_ME') {
-        renderDistrictViewerInterface(); // Read-only dashboard visualizations
-    } else if (roleTitle === 'HEAD_ME') {
-        renderManagerInterface(true);    // View + Edit tools with justification chatboxes
-    } else if (roleTitle === 'UNDP_MASTER') {
-        renderMasterInterface();         // Master cross-NGO view bypass triggers
-    }
-}
     </script>
 </body>
 </html>
