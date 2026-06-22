@@ -24,17 +24,16 @@
                 <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white mt-1">AVCB M&E Enterprise Portal</h1>
                 <p class="text-xs text-slate-400 max-w-xs mx-auto">Authorize parameters using your verified corporate access profile credentials.</p>
             </div>
-            
-           <form id="login-form" onsubmit="handleUserLogin(event)" class="space-y-4 text-left">
-                <div>
-                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Corporate Email Address</label>
-                    <input type="email" id="login-email" value="balarhat.court@demo.org" required
-                           class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 px-4 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                <button type="submit" id="btn-login" class="w-full bg-slate-900 dark:bg-emerald-500 hover:opacity-90 text-white font-semibold py-3 px-4 rounded-xl text-sm transition shadow-md">
-                    Verify Identity & Enter Workspace
-                </button>
-            </form>
+            <form id="login-form" onsubmit="handleUserLogin(event)" class="space-y-4 text-left">
+    <div>
+        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Corporate Email Address</label>
+        <input type="email" id="login-email" value="balarhat.court@demo.org" required
+               class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 px-4 py-2.5 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+    </div>
+    <button type="submit" id="btn-login" class="w-full bg-slate-900 dark:bg-emerald-500 hover:opacity-90 text-white font-semibold py-3 px-4 rounded-xl text-sm transition shadow-md">
+        Verify Identity & Enter Workspace
+    </button>
+</form>
             <div id="auth-error" class="hidden mt-4 p-3 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 text-xs rounded-xl text-center font-medium border border-red-200 dark:border-red-900/50"></div>
         </div>
     </div>
@@ -175,12 +174,13 @@ const supabase = supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_PUBLI
         // 3. MAIN WORKSPACE LOGIN AUTH ENTRANCE ENGINE
        // Ensure 'event' is received inside the function signature parameter
 async function handleUserLogin(event) {
-    // 💡 Add this line at the very top of your function block!
-    if (event) event.preventDefault(); 
+    event.preventDefault(); // This stops the '?' URL refresh!
     
     const emailInput = document.getElementById('login-email').value.trim().toLowerCase();
     const loginBtn = document.getElementById('btn-login');
     const errorBox = document.getElementById('auth-error');
+    
+    // ... rest of your script continues
     
     // ... rest of your code remains exactly the same            
             if (loginBtn) {
