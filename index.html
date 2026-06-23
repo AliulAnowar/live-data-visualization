@@ -155,15 +155,24 @@
     </div>
 
     <script>
-// 1. SUPABASE CONNECTION CONFIGURATION
+
+// 1. SUPABASE CONNECTION PARAMETERS
 const SUPABASE_PROJECT_URL = "https://eghmzetfcimllmenhhei.supabase.co";
 const SUPABASE_ANON_PUBLIC_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVnaG16ZXRmY2ltbGxtZW5oaGVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTA1MTAsImV4cCI6MjA5NzM2NjUxMH0.FLDImmDZ7pSlgcmoufnSENOhBPQAPQ20uZfYnHUQEq4";
 
-// 2. INITIALIZE GLOBAL INSTANCE (Using window.supabase to avoid the name loop)
-const database = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_PUBLIC_KEY);
+// 2. SUPABASE INITIALIZATION ENGINE WITH EXPLICIT ORIGIN HEADERS
+const supabase = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_PUBLIC_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true
+  },
+  global: {
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    }
+  }
+});
 
-// 3. ALIAS IT TO THE OLD VARIABLE NAME SO YOUR EXISTING FUNCTIONS WORK
-const supabase = database;
 // State Tracking Cache variables
 let currentUserProfile = null;
 
