@@ -161,7 +161,7 @@ const SUPABASE_PROJECT_URL = "https://eghmzetfcimllmenhhei.supabase.co";
 const SUPABASE_ANON_PUBLIC_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVnaG16ZXRmY2ltbGxtZW5oaGVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTA1MTAsImV4cCI6MjA5NzM2NjUxMH0.FLDImmDZ7pSlgcmoufnSENOhBPQAPQ20uZfYnHUQEq4";
 
 // 2. SUPABASE INITIALIZATION ENGINE WITH EXPLICIT ORIGIN HEADERS
-const supabase = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_PUBLIC_KEY, {
+const supabaseClient = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_PUBLIC_KEY, {
   auth: {
     persistSession: true,
     autoRefreshToken: true
@@ -200,7 +200,7 @@ async function handleUserLogin(event) {
 
     // 🛡️ THE TRY...CATCH BLOCK SAVES THE DAY HERE:
     try {
-        const { data: userProfile, error } = await supabase
+        const { data: userProfile, error } = await supabaseClient
             .from('app_users')
             .select('id, email, user_name, role, ngo_id, district_id, upazila_id, union_id')
             .eq('email', emailInput)
@@ -272,7 +272,7 @@ function initializeDashboardLayout(profile) {
 
 // LIVE DATA RECORD COUNTERS INTEGRITY ENGINE
 async function updateDashboardMetrics(selectedDistrictName) {
-    let query = supabase.from('ngo_project_records').select('*', { count: 'exact' });
+    let query = supabaseClient.from('ngo_project_records').select('*', { count: 'exact' });
     
     if (selectedDistrictName && selectedDistrictName !== 'All Field Districts') {
         query = query.eq('district', selectedDistrictName);
