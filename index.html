@@ -174,66 +174,57 @@ document.getElementById('themeToggle').addEventListener('click', () => {
 
 // 3. MAIN WORKSPACE LOGIN AUTH ENTRANCE ENGINE
 async function handleUserLogin(event) {
-    // CRITICAL: This MUST be the very first line to stop the page from refreshing with a '?'
     if (event) {
         event.preventDefault();
         event.stopPropagation();
     }
     
-    // Look for the correct element fallback matching strategy
     const emailInputElement = document.getElementById('login-email') || document.getElementById('authEmail');
-    if (!emailInputElement) {
-        alert("Frontend Error: Input field selector missing. Please check your HTML IDs.");
-        return;
-    }
-    
     const emailInput = emailInputElement.value.trim().toLowerCase();
-    const loginBtn = document.getElementById('btn-login');
+    const loginBtn = document.getElementById('btn-login') || document.querySelector('button[onclick*="handleUserLogin"]');
     const errorBox = document.getElementById('auth-error');
     
     if (loginBtn) {
         loginBtn.disabled = true;
-        loginBtn.innerText = "Verifying Workspace Matrix...";
+        loginBtn.innerText = "Verifying Credentials...";
     }
-    if (errorBox) errorBox.classList.add('hidden');
 
+    // 🛡️ THE TRY...CATCH BLOCK SAVES THE DAY HERE:
     try {
-        console.log("Attempting database profile lookup for:", emailInput);
-
-        // Query our app_users table to fetch role configuration variables
         const { data: userProfile, error } = await supabase
             .from('app_users')
             .select('id, email, user_name, role, ngo_id, district_id, upazila_id, union_id')
             .eq('email', emailInput)
             .maybeSingle();
 
-        if (error) throw error;
+        if (error) throw error; // If Supabase returns a database error, jump straight to catch
 
         if (!userProfile) {
-            throw new Error("Access Denied: This credential footprint is not registered inside our workspace registry.");
+            throw new Error("Access Denied: This email footprint is not registered.");
         }
 
-        // Cache active configuration profile locally
+        // Success! Proceed to dashboard
         currentUserProfile = userProfile;
-        
-        // Fire Dashboard Display Transitions
         initializeDashboardLayout(currentUserProfile);
 
     } catch (err) {
-        console.error("Auth routing failure:", err);
+        // 🚨 CATCHES ANY NETWORK OR DATABASE ERRORS CLEANLY:
+        console.error("Authentication failure detailed log:", err);
+        
         if (errorBox) {
             errorBox.innerText = err.message;
             errorBox.classList.remove('hidden');
+        } else {
+            alert(`Login Failed: ${err.message}`);
         }
-        alert("❌ Login Failed: " + err.message);
+
         if (loginBtn) {
             loginBtn.disabled = false;
             loginBtn.innerText = "Verify Identity & Enter Workspace";
         }
     }
-    return false; // Secondary backup to prevent form processing submission overrides
+    return false;
 }
-
 // 4. THE DASHBOARD VIEWPORT MATRIX SYSTEM 
 function initializeDashboardLayout(profile) {
     console.log("Routing session for account profile parameters:", profile);
