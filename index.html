@@ -153,187 +153,88 @@
             </main>
         </div>
     </div>
+<script>
+    // 1. SUPABASE CONNECTION CONFIGURATION
+    const SUPABASE_PROJECT_URL = "https://eghmzetfcimllmenhhei.supabase.co";
+    const SUPABASE_ANON_PUBLIC_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVnaG16ZXRmY2ltbGxtZW5oaGVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTA1MTAsImV4cCI6MjA5NzM2NjUxMH0.FLDImmDZ7pSlgcmoufnSENOhBPQAPQ20uZfYnHUQEq4";
 
-    <script>
+    // 2. INITIALIZE CLIENT (Using window.supabase to avoid naming conflicts)
+    const supabaseClient = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_PUBLIC_KEY);
 
-// 1. SUPABASE CONNECTION PARAMETERS
-const SUPABASE_PROJECT_URL = "https://eghmzetfcimllmenhhei.supabase.co";
-const SUPABASE_ANON_PUBLIC_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVnaG16ZXRmY2ltbGxtZW5oaGVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTA1MTAsImV4cCI6MjA5NzM2NjUxMH0.FLDImmDZ7pSlgcmoufnSENOhBPQAPQ20uZfYnHUQEq4";
+    // State Tracking Cache
+    let currentUserProfile = null;
 
-// 2. SUPABASE INITIALIZATION ENGINE WITH EXPLICIT ORIGIN HEADERS
-const supabaseClient = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_PUBLIC_KEY, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true
-  },
-  global: {
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-    }
-  }
-});
+    // 3. SECURE LOGIN GATEWAY
+    async function handleUserLogin(event) {
+        if (event) event.preventDefault();
 
-// State Tracking Cache variables
-let currentUserProfile = null;
+        const emailInputElement = document.getElementById('login-email');
+        const emailInput = emailInputElement.value.trim().toLowerCase();
+        const loginBtn = document.getElementById('btn-login');
+        const errorBox = document.getElementById('auth-error');
 
-// Theme execution handler
-document.getElementById('themeToggle').addEventListener('click', () => { 
-    document.documentElement.classList.toggle('dark');
-});
-
-// 3. MAIN WORKSPACE LOGIN AUTH ENTRANCE ENGINE
-async function handleUserLogin(event) {
-    if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-    }
-    
-    const emailInputElement = document.getElementById('login-email') || document.getElementById('authEmail');
-    const emailInput = emailInputElement.value.trim().toLowerCase();
-    const loginBtn = document.getElementById('btn-login') || document.querySelector('button[onclick*="handleUserLogin"]');
-    const errorBox = document.getElementById('auth-error');
-    
-    if (loginBtn) {
         loginBtn.disabled = true;
         loginBtn.innerText = "Verifying Credentials...";
-    }
+        errorBox.classList.add('hidden');
 
-    // 🛡️ THE TRY...CATCH BLOCK SAVES THE DAY HERE:
-    try {
-        const { data: userProfile, error } = await supabaseClient
-            .from('app_users')
-            .select('id, email, user_name, role, ngo_id, district_id, upazila_id, union_id')
-            .eq('email', emailInput)
-            .maybeSingle();
+        try {
+            // Fetch profile - Ensure RLS policy "Allow anonymous read" is set in Supabase
+            const { data, error } = await supabaseClient
+                .from('app_users')
+                .select('*')
+                .eq('email', emailInput)
+                .maybeSingle();
 
-        if (error) throw error; // If Supabase returns a database error, jump straight to catch
+            if (error) throw error;
+            if (!data) throw new Error("Email not registered in workspace.");
 
-        if (!userProfile) {
-            throw new Error("Access Denied: This email footprint is not registered.");
-        }
+            currentUserProfile = data;
+            console.log("Login successful:", currentUserProfile);
+            
+            // Proceed to your dashboard initialization function
+            initializeDashboardLayout(currentUserProfile);
+            updateDashboardMetrics('All Field Districts'); 
 
-        // Success! Proceed to dashboard
-        currentUserProfile = userProfile;
-        initializeDashboardLayout(currentUserProfile);
-
-    } catch (err) {
-        // 🚨 CATCHES ANY NETWORK OR DATABASE ERRORS CLEANLY:
-        console.error("Authentication failure detailed log:", err);
-        
-        if (errorBox) {
-            errorBox.innerText = err.message;
+        } catch (err) {
+            console.error("Authentication failure:", err.message);
+            errorBox.innerText = `⚠️ ${err.message}`;
             errorBox.classList.remove('hidden');
-        } else {
-            alert(`Login Failed: ${err.message}`);
-        }
-
-        if (loginBtn) {
             loginBtn.disabled = false;
             loginBtn.innerText = "Verify Identity & Enter Workspace";
         }
     }
-    return false;
-}
-// 4. THE DASHBOARD VIEWPORT MATRIX SYSTEM 
-function initializeDashboardLayout(profile) {
-    console.log("Routing session for account profile parameters:", profile);
-    
-    // Map configuration labels smoothly to layout nodes
-    document.getElementById('displayUserName').textContent = profile.user_name;
-    document.getElementById('displayUserRole').textContent = profile.role;
-    document.getElementById('displayUserAvatar').textContent = profile.user_name.substring(0, 2).toUpperCase();
 
-    const adminPanel = document.getElementById('adminDataInputPanel');
-    
-    // Allow dynamic UI write interfaces for manager/master classes
-    if (profile.role === 'HEAD_ME' || profile.role === 'UNDP_MASTER') {
-        if (adminPanel) {
-            adminPanel.classList.remove('hidden');
-            setTimeout(() => { 
-                adminPanel.classList.remove('scale-95', 'opacity-0'); 
-                adminPanel.classList.add('scale-100', 'opacity-100'); 
-            }, 50);
-        }
-    } else {
-        if (adminPanel) adminPanel.classList.add('hidden');
-    }
-
-    // Slide out the gate shield overlay window panel smoothly
-    document.getElementById('loginGateway').classList.add('scale-110', 'opacity-0', 'pointer-events-none');
-    
-    const mainApp = document.getElementById('mainDashboardApp');
-    mainApp.classList.remove('hidden');
-    setTimeout(() => { mainApp.classList.remove('opacity-0'); }, 100);
-
-    // Fetch live operational records indicators
-    updateDashboardMetrics('All Field Districts');
-    renderInteractiveChartGraphics(['Rangpur', 'Gaibandha', 'Dinajpur', 'Kurigram'], [831, 460, 448, 414]);
-}
-
-// LIVE DATA RECORD COUNTERS INTEGRITY ENGINE
-async function updateDashboardMetrics(selectedDistrictName) {
-    let query = supabaseClient.from('ngo_project_records').select('*', { count: 'exact' });
-    
-    if (selectedDistrictName && selectedDistrictName !== 'All Field Districts') {
-        query = query.eq('district', selectedDistrictName);
-    }
-    
-    const { data, count, error } = await query;
-    if (error) return console.error("Metrics engine query rejection:", error.message);
-
-    document.getElementById('total-records-display').innerText = count;
-    
-    if (data && data.length > 0) {
-        const females = data.filter(r => r.gender === 'Female').length;
-        const total = data.length;
-        
-        document.getElementById('female-percentage-display').innerText = ((females / total) * 100).toFixed(1) + '%';
-        document.getElementById('male-percentage-display').innerText = (((total - females) / total) * 100).toFixed(1) + '%';
-    }
-}
-
-// CHARTS GRAPHICS CONTROLLER Builder
-function renderInteractiveChartGraphics(labelsArray, dataValuesArray) {
-    const canvasElement = document.getElementById('luxuryInteractiveChart');
-    if (!canvasElement) return;
-    const canvasCtx = canvasElement.getContext('2d');
-    new Chart(canvasCtx, {
-        type: 'bar',
-        data: {
-            labels: labelsArray,
-            datasets: [{ 
-                data: dataValuesArray, 
-                backgroundColor: '#10b981', 
-                borderRadius: 12, 
-                barPercentage: 0.45 
-            }]
-        },
-        options: { 
-            responsive: true, 
-            maintainAspectRatio: false, 
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
-                x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+    // 4. METRICS SYNC ENGINE
+    async function updateDashboardMetrics(selectedDistrictName) {
+        try {
+            let query = supabaseClient.from('ngo_project_records').select('*', { count: 'exact' });
+            
+            if (selectedDistrictName && selectedDistrictName !== 'All Field Districts') {
+                query = query.eq('district', selectedDistrictName);
             }
-        }
-    });
-}
+            
+            const { data, count, error } = await query;
+            if (error) throw error;
 
-// EXIT APPLICATION AND TERMINATE SESSION PARAMETERS
-function executeSystemLogout() {
-    const gateway = document.getElementById('loginGateway');
-    gateway.classList.remove('scale-110', 'opacity-0', 'pointer-events-none');
-    
-    const mainApp = document.getElementById('mainDashboardApp');
-    mainApp.classList.add('hidden', 'opacity-0');
-    
-    currentUserProfile = null;
-    alert("🔒 Workspace session closed. Identity metrics flushed successfully.");
-}
-        async function sendDataToSupabaseCloud() {
-    alert("System Status: Data injection module ready. Hooking payload values...");
-}
-    </script>
+            document.getElementById('total-records-display').innerText = count || 0;
+            
+            if (data && data.length > 0) {
+                const females = data.filter(r => r.gender === 'Female').length;
+                const total = data.length;
+                
+                document.getElementById('female-percentage-display').innerText = ((females / total) * 100).toFixed(1) + '%';
+                document.getElementById('male-percentage-display').innerText = (((total - females) / total) * 100).toFixed(1) + '%';
+            }
+        } catch (err) {
+            console.error("Metrics sync failure:", err.message);
+        }
+    }
+
+    // Initial dummy data load to ensure no crashes
+    function initializeDashboardLayout(profile) {
+        document.getElementById('loginGateway').classList.add('hidden');
+        document.getElementById('mainDashboardApp').classList.remove('hidden');
+    }
+</script>
 </body>
 </html>
