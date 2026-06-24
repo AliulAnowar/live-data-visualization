@@ -41,7 +41,6 @@
     </div>
 </div>
 <div id="mainDashboardApp" class="opacity-0 transition-opacity duration-700 hidden flex-1 flex flex-col w-full">
-        <!-- DASHBOARD HEADER NAVIGATION BAR -->
         <header class="bg-white dark:bg-[#111827] border-b border-slate-200/80 dark:border-slate-800/50 px-4 sm:px-8 py-4 flex flex-col md:flex-row gap-4 items-center justify-between w-full">
             <div class="flex items-center gap-3">
                 <img src="image/logo.svg" alt="Logo" class="h-10 w-10" onerror="this.src='https://placehold.co/40x40?text=ME'">
@@ -65,10 +64,8 @@
             </div>
         </header>
 
-        <!-- DASHBOARD SPLIT WORKSPACE CONTENT -->
         <div class="flex flex-col md:flex-row gap-6 p-4 sm:p-6 lg:p-8 w-full max-w-[1600px] mx-auto flex-1 items-start">
             
-            <!-- LEFT ASIDE: CONTROL FILTER PANELS -->
             <aside class="w-full md:w-64 shrink-0 space-y-4">
                 <div class="bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800/50 p-5 rounded-2xl shadow-sm">
                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Dataset Criteria Filter</label>
@@ -92,10 +89,8 @@
                 </div>
             </aside>
 
-            <!-- RIGHT MAIN PANEL: STATISTICS, INPUTS & VISUALIZATIONS -->
             <main class="flex-1 space-y-6 w-full min-w-0">
                 
-                <!-- ROW 1: METRIC CARD STRIP -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     <div class="bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-2xl p-6 shadow-sm">
                         <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Active Records</div>
@@ -114,7 +109,6 @@
                     </div>
                 </div>
 
-                <!-- ROW 2: NEW AVCB CASE ENTRY FORM MODULE -->
                 <div class="bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800/50 p-6 rounded-3xl shadow-sm max-w-xl mx-auto w-full">
                     <h3 class="text-sm font-bold uppercase tracking-wider text-slate-800 dark:text-white mb-4 flex items-center gap-2">📝 AVCB Daily Case Registry</h3>
                     
@@ -173,7 +167,6 @@
                     </form>
                 </div>
 
-                <!-- ROW 3: HIDDEN ADMIN PANEL CONTAINER -->
                 <div id="adminDataInputPanel" class="hidden transform transition-all duration-500 scale-95 opacity-0">
                     <div class="bg-white dark:bg-[#111827] border border-dashed border-emerald-500/30 rounded-3xl p-6 shadow-md space-y-4">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-2">⚡ Data Input Control Protocol (Admin Mode Enabled)</h3>
@@ -203,7 +196,6 @@
                     </div>
                 </div>
 
-                <!-- ROW 4: DATA CHARTS VISUALIZATION TRACK -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="lg:col-span-2 bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
                         <div class="relative h-72 w-full">
