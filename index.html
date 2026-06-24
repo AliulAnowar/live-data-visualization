@@ -34,6 +34,39 @@
         Verify Identity & Enter Workspace
     </button>
 </form>
+            <form id="case-entry-form" onsubmit="submitNewAvcbCase(event)" class="space-y-4 text-left">
+    <label>Case Number:</label>
+    <input type="text" id="input-case-number" placeholder="e.g., VC-RANG-MITHA-2026-042" required class="w-full p-2 border">
+
+    <label>Filing Date:</label>
+    <input type="date" id="input-filing-date" required class="w-full p-2 border">
+
+    <label>Case Type:</label>
+    <select id="select-case-type" required class="w-full p-2 border">
+        <option value="" disabled selected>Select Type</option>
+        <option value="CIVIL">CIVIL</option>
+        <option value="CRIMINAL">CRIMINAL</option>
+    </select>
+
+    <label>Dispute Amount (BDT):</label>
+    <input type="number" id="input-amount" placeholder="Legal limit up to 50,000 BDT" required class="w-full p-2 border">
+
+    <label>Beneficiary Name:</label>
+    <input type="text" id="input-beneficiary-name" placeholder="Full Name" required class="w-full p-2 border">
+
+    <label>Beneficiary Gender:</label>
+    <select id="select-gender" required class="w-full p-2 border">
+        <option value="" disabled selected>Select Gender</option>
+        <option value="MALE">MALE</option>
+        <option value="FEMALE">FEMALE</option>
+    </select>
+
+    <div id="form-error-msg" class="hidden text-red-500 font-bold mt-2"></div>
+
+    <button type="submit" id="btn-submit-case" class="w-full bg-blue-600 text-white p-2 rounded font-semibold">
+        Submit & Sync Case Record
+    </button>
+</form>
             <div id="auth-error" class="hidden mt-4 p-3 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 text-xs rounded-xl text-center font-medium border border-red-200 dark:border-red-900/50"></div>
         </div>
     </div>
@@ -333,6 +366,58 @@ function executeSystemLogout() {
         async function sendDataToSupabaseCloud() {
     alert("System Status: Data injection module ready. Hooking payload values...");
 }
+            async function submitNewAvcbCase(event) {
+    if (event) event.preventDefault();
+
+    const submitBtn = document.getElementById('btn-submit-case');
+    const formErrorBox = document.getElementById('form-error-msg');
+    
+    // 1. UI Loading Feedback
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Syncing Case to Cloud...";
+    if (formErrorBox) formErrorBox.classList.add('hidden');
+
+    // 2. Build the Payload exactly matching your database schema
+    const casePayload = {
+        case_number: document.getElementById('input-case-number').value.trim(),
+        union_id: currentUserProfile.union_id, // Automatically tagged via logged-in user
+        filing_date: document.getElementById('input-filing-date').value,
+        case_type: document.getElementById('select-case-type').value, // 'CIVIL' or 'CRIMINAL'
+        dispute_amount: parseFloat(document.getElementById('input-amount').value) || 0,
+        beneficiary_name: document.getElementById('input-beneficiary-name').value.trim(),
+        beneficiary_gender: document.getElementById('select-gender').value, // 'MALE', 'FEMALE', etc.
+        status: 'PENDING' // Default starting status
+    };
+
+    try {
+        // 3. Insert into your existing table
+        const { data, error } = await supabaseClient
+            .from('avcb_cases')
+            .insert([casePayload]);
+
+        if (error) throw error;
+
+        // 4. Success Path
+        alert(`🎉 Case ${casePayload.case_number} successfully registered!`);
+        document.getElementById('case-entry-form').reset(); // Clear form
+        
+        // Refresh dashboard metrics in real-time
+        updateDashboardMetrics(); 
+
+    } catch (err) {
+        console.error("Data entry insertion failed:", err.message);
+        if (formErrorBox) {
+            formErrorBox.innerText = `⚠️ Sync Failure: ${err.message}`;
+            formErrorBox.classList.remove('hidden');
+        }
+    } finally {
+        // 5. Reset Button State
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Submit & Sync Case Record";
+    }
+}
+            // Add this line at the bottom of your script tags so the browser listens for the submit action
+document.getElementById('case-entry-form').addEventListener('submit', submitNewAvcbCase);
     </script>
 
 </body>
