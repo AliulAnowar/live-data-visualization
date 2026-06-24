@@ -16,58 +16,81 @@
     </script>
 </head>
 <body class="bg-[#f8fafc] text-[#1e293b] dark:bg-[#0b0f19] dark:text-[#f1f5f9] min-h-screen transition-colors duration-300 flex flex-col font-sans">
-
-    <div id="loginGateway" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 dark:bg-[#060913]/80 backdrop-blur-md transition-all duration-500">
+ <div id="loginGateway" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 dark:bg-[#060913]/80 backdrop-blur-md transition-all duration-500">
         <div class="w-full max-w-md p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#111827] border border-slate-200 dark:border-slate-800 shadow-2xl space-y-6 text-center">
             <div class="flex flex-col items-center gap-3">
                 <img src="image/logo.svg" alt="M&E Logo" class="h-16 w-16 object-contain" onerror="this.src='https://placehold.co/64x64?text=M%26E'">
                 <h1 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white mt-1">AVCB M&E Enterprise Portal</h1>
                 <p class="text-xs text-slate-400 max-w-xs mx-auto">Authorize parameters using your verified corporate access profile credentials.</p>
             </div>
-            <form id="login-form" onsubmit="handleUserLogin(event)" class="space-y-4 text-left">
-    <div>
-        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Corporate Email Address</label>
-        <input type="email" id="login-email" value="balarhat.court@demo.org" required
-               class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 px-4 py-2.5 rounded-xl text-sm focus:outline-none">
+<form id="login-form" onsubmit="handleUserLogin(event)" class="space-y-4 text-left">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Court Officer Email</label>
+                <input type="email" id="login-email" placeholder="name@ngo.org" required 
+                       class="mt-1 w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            
+            <div id="auth-error" class="hidden text-sm text-red-600 bg-red-50 p-2 rounded"></div>
+
+            <button type="submit" id="btn-login" class="w-full bg-blue-600 text-white p-2 rounded-md font-semibold hover:bg-blue-700 transition">
+                Verify Identity & Enter Workspace
+            </button>
+        </form>
     </div>
-    <button type="submit" id="btn-login" class="w-full bg-slate-900 dark:bg-emerald-500 hover:opacity-90 text-white font-semibold py-3 px-4 rounded-xl text-sm transition shadow-md">
-        Verify Identity & Enter Workspace
-    </button>
-</form>
-            <form id="case-entry-form" onsubmit="submitNewAvcbCase(event)" class="space-y-4 text-left">
-    <label>Case Number:</label>
-    <input type="text" id="input-case-number" placeholder="e.g., VC-RANG-MITHA-2026-042" required class="w-full p-2 border">
+</div>
 
-    <label>Filing Date:</label>
-    <input type="date" id="input-filing-date" required class="w-full p-2 border">
+<div id="mainDashboardApp" class="hidden min-h-screen bg-gray-50 p-6">
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        </div>
 
-    <label>Case Type:</label>
-    <select id="select-case-type" required class="w-full p-2 border">
-        <option value="" disabled selected>Select Type</option>
-        <option value="CIVIL">CIVIL</option>
-        <option value="CRIMINAL">CRIMINAL</option>
-    </select>
+    <div class="bg-white p-6 rounded-lg shadow-md max-w-xl mx-auto">
+        <h3 class="text-xl font-bold mb-4 text-gray-800">AVCB Daily Case Registry</h3>
+        
+        <form id="case-entry-form" onsubmit="submitNewAvcbCase(event)" class="space-y-4 text-left">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Case Number</label>
+                <input type="text" id="input-case-number" placeholder="VC-RANG-MITHA-2026-042" required class="mt-1 w-full p-2 border rounded-md">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Filing Date</label>
+                <input type="date" id="input-filing-date" required class="mt-1 w-full p-2 border rounded-md">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Case Type</label>
+                <select id="select-case-type" required class="mt-1 w-full p-2 border rounded-md">
+                    <option value="" disabled selected>Select Type</option>
+                    <option value="CIVIL">CIVIL</option>
+                    <option value="CRIMINAL">CRIMINAL</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Dispute Amount (BDT)</label>
+                <input type="number" id="input-amount" placeholder="Legal limit up to 50,000 BDT" required class="mt-1 w-full p-2 border rounded-md">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Beneficiary Name</label>
+                <input type="text" id="input-beneficiary-name" placeholder="Full Name" required class="mt-1 w-full p-2 border rounded-md">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Beneficiary Gender</label>
+                <select id="select-gender" required class="mt-1 w-full p-2 border rounded-md">
+                    <option value="" disabled selected>Select Gender</option>
+                    <option value="MALE">MALE</option>
+                    <option value="FEMALE">FEMALE</option>
+                </select>
+            </div>
 
-    <label>Dispute Amount (BDT):</label>
-    <input type="number" id="input-amount" placeholder="Legal limit up to 50,000 BDT" required class="w-full p-2 border">
+            <div id="form-error-msg" class="hidden text-sm text-red-600 bg-red-50 p-2 rounded"></div>
 
-    <label>Beneficiary Name:</label>
-    <input type="text" id="input-beneficiary-name" placeholder="Full Name" required class="w-full p-2 border">
-
-    <label>Beneficiary Gender:</label>
-    <select id="select-gender" required class="w-full p-2 border">
-        <option value="" disabled selected>Select Gender</option>
-        <option value="MALE">MALE</option>
-        <option value="FEMALE">FEMALE</option>
-    </select>
-
-    <div id="form-error-msg" class="hidden text-red-500 font-bold mt-2"></div>
-
-    <button type="submit" id="btn-submit-case" class="w-full bg-blue-600 text-white p-2 rounded font-semibold">
-        Submit & Sync Case Record
-    </button>
-</form>
-            <div id="auth-error" class="hidden mt-4 p-3 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 text-xs rounded-xl text-center font-medium border border-red-200 dark:border-red-900/50"></div>
+            <button type="submit" id="btn-submit-case" class="w-full bg-green-600 text-white p-2 rounded-md font-semibold hover:bg-green-700 transition">
+                Submit & Sync Case Record
+            </button>
+        </form>
+    </div>
+</div>
+            
+    <div id="auth-error" class="hidden mt-4 p-3 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 text-xs rounded-xl text-center font-medium border border-red-200 dark:border-red-900/50"></div>
         </div>
     </div>
 
