@@ -15,26 +15,21 @@
         }
     </script>
 </head>
-    <body class="bg-[#f8fafc] text-[#1e293b] dark:bg-[#0b0f19] dark:text-[#f1f5f9] min-h-screen transition-colors duration-300 flex flex-col font-sans">
+<body class="bg-[#f8fafc] text-[#1e293b] dark:bg-[#0b0f19] dark:text-[#f1f5f9] min-h-screen transition-colors duration-300 flex flex-col font-sans">
 
 <div id="loginGateway" class="flex items-center justify-center min-h-screen bg-slate-100">
     <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md text-center border border-gray-200">
-        
         <div class="flex justify-center items-center gap-4 mb-6">
             <img src="image/logo.svg" alt="M&E" class="h-14 w-auto object-contain fallback-logo">
         </div>
-
         <h2 class="text-xl font-bold mb-6 text-gray-800">AVCB Real-Time M&E Portal</h2>
-        
         <form id="login-form" onsubmit="handleUserLogin(event)" class="space-y-4 text-left">
             <div>
                 <label class="block text-sm font-medium text-gray-700">Court Officer Email</label>
                 <input type="email" id="login-email" placeholder="officer@avcb-portal.org" required 
-                       class="mt-1 w-full p-2 border border-gray-300 rounded-md text-gray-900 bg-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:text-gray-900">
+                       class="mt-1 w-full p-2 border border-gray-300 rounded-md text-gray-900 bg-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500">
             </div>
-            
             <div id="auth-error" class="hidden text-sm text-red-600 bg-red-50 p-2 rounded"></div>
-
             <button type="submit" id="btn-login" class="w-full bg-blue-600 text-white p-2 rounded-md font-semibold hover:bg-blue-700 transition">
                 Verify Identity & Enter Workspace
             </button>
@@ -93,89 +88,96 @@
 
             <main class="flex-1 space-y-6 w-full min-w-0">
                 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                    <div class="bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-2xl p-6 shadow-sm">
-                        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Active Records</div>
-                        <div id="total-records-display" class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight mt-2">2153</div>
-                        <div class="text-[10px] text-emerald-400 mt-1 font-medium">✓ Verified Dataset Integrity Layer</div>
-                    </div>
-                    <div class="bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-2xl p-6 shadow-sm">
-                        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Female Demographics</div>
-                        <div id="female-percentage-display" class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight mt-2">60.1%</div>
-                        <div class="text-[10px] text-slate-500 mt-1">Target sample pool calculation</div>
-                    </div>
-                    <div class="bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-2xl p-6 shadow-sm">
-                        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Male Demographics</div>
-                        <div id="male-percentage-display" class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight mt-2">39.9%</div>
-                        <div class="text-[10px] text-slate-500 mt-1">Target sample pool calculation</div>
-                    </div>
-                </div>
-
-                <div class="bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800/50 p-6 rounded-3xl shadow-sm max-w-xl mx-auto w-full">
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-800 dark:text-white mb-4 flex items-center gap-2">📝 AVCB Daily Case Registry</h3>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
                     
-                    <form id="case-entry-form" onsubmit="submitNewAvcbCase(event)" class="space-y-4 text-left">
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Case Number</label>
-                            <input type="text" id="input-case-number" placeholder="VC-RANG-MITHA-2026-042" required 
-                                   class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 px-3 py-2 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500">
-                        </div>
+                    <div class="lg:col-span-2 bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800/50 p-6 rounded-3xl shadow-sm w-full">
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-slate-800 dark:text-white mb-4 flex items-center gap-2">📝 AVCB Daily Case Registry</h3>
                         
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Filing Date</label>
-                                <input type="date" id="input-filing-date" required 
-                                       class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 px-3 py-2 rounded-xl text-xs focus:outline-none">
+                        <form id="case-entry-form" onsubmit="submitNewAvcbCase(event)" class="space-y-4 text-left">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Case Number</label>
+                                    <input type="text" id="input-case-number" placeholder="VC-RANG-MITHA-2026-042" required 
+                                           class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 px-3 py-2 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Filing Date</label>
+                                    <input type="date" id="input-filing-date" required 
+                                           class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 px-3 py-2 rounded-xl text-xs focus:outline-none">
+                                </div>
                             </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Case Type</label>
-                                <select id="select-case-type" required 
-                                        class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-300 px-3 py-2 rounded-xl text-xs focus:outline-none">
-                                    <option value="" disabled selected>Select Type</option>
-                                    <option value="CIVIL">CIVIL</option>
-                                    <option value="CRIMINAL">CRIMINAL</option>
-                                </select>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Case Type</label>
+                                    <select id="select-case-type" required 
+                                            class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-300 px-3 py-2 rounded-xl text-xs focus:outline-none">
+                                        <option value="" disabled selected>Select Type</option>
+                                        <option value="CIVIL">CIVIL</option>
+                                        <option value="CRIMINAL">CRIMINAL</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Dispute Amount (BDT)</label>
+                                    <input type="number" id="input-amount" placeholder="Legal limit up to 50,000 BDT" required 
+                                           class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 px-3 py-2 rounded-xl text-xs focus:outline-none">
+                                </div>
                             </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div class="sm:col-span-1">
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Beneficiary Name</label>
+                                    <input type="text" id="input-beneficiary-name" placeholder="Full Name" required 
+                                           class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 px-3 py-2 rounded-xl text-xs focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Beneficiary Gender</label>
+                                    <select id="select-gender" required 
+                                            class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-300 px-3 py-2 rounded-xl text-xs focus:outline-none">
+                                        <option value="" disabled selected>Select Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Beneficiary Age</label>
+                                    <input type="number" id="input-beneficiary-age" placeholder="Age" required 
+                                           class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 px-3 py-2 rounded-xl text-xs focus:outline-none">
+                                </div>
+                            </div>
+
+                            <div id="form-error-msg" class="hidden text-xs text-red-500 bg-red-500/10 p-2.5 rounded-xl border border-red-500/20"></div>
+
+                            <button type="submit" id="btn-submit-case" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2.5 px-4 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-1.5">
+                                📤 Submit & Sync Case Record
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="space-y-4 w-full">
+                        <div class="bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-2xl p-5 shadow-sm">
+                            <div class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Total Active Records</div>
+                            <div id="total-records-display" class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">2153</div>
+                            <div class="text-[10px] text-emerald-400 mt-1 font-medium">✓ Verified Integrity Layer</div>
                         </div>
-
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Dispute Amount (BDT)</label>
-                            <input type="number" id="input-amount" placeholder="Legal limit up to 50,000 BDT" required 
-                                   class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 px-3 py-2 rounded-xl text-xs focus:outline-none">
+                        <div class="bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-2xl p-5 shadow-sm">
+                            <div class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Female Demographics</div>
+                            <div id="female-percentage-display" class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">60.1%</div>
                         </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Beneficiary Name</label>
-                                <input type="text" id="input-beneficiary-name" placeholder="Full Name" required 
-                                       class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 px-3 py-2 rounded-xl text-xs focus:outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Beneficiary Gender</label>
-                                <select id="select-gender" required 
-                                        class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-300 px-3 py-2 rounded-xl text-xs focus:outline-none">
-                                    <option value="" disabled selected>Select Gender</option>
-                                    <option value="MALE">MALE</option>
-                                    <option value="FEMALE">FEMALE</option>
-                                </select>
-                            </div>
+                        <div class="bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-2xl p-5 shadow-sm">
+                            <div class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Male Demographics</div>
+                            <div id="male-percentage-display" class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">39.9%</div>
                         </div>
-
-                        <div id="form-error-msg" class="hidden text-xs text-red-500 bg-red-500/10 p-2.5 rounded-xl border border-red-500/20"></div>
-
-                        <button type="submit" id="btn-submit-case" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2.5 px-4 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-1.5">
-                            📤 Submit & Sync Case Record
-                        </button>
-                    </form>
+                    </div>
                 </div>
 
                 <div id="adminDataInputPanel" class="hidden transform transition-all duration-500 scale-95 opacity-0">
                     <div class="bg-white dark:bg-[#111827] border border-dashed border-emerald-500/30 rounded-3xl p-6 shadow-md space-y-4">
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-2">⚡ Data Input Control Protocol (Admin Mode Enabled)</h3>
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-2">⚡ Data Input Control Protocol</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Target Field Region</label>
-                                <select id="inputDistrict" class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-xl text-xs text-slate-300 focus:outline-none">
+                                <select id="inputDistrict" class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-xl text-xs focus:outline-none">
                                     <option value="Rangpur">Rangpur</option>
                                     <option value="Gaibandha">Gaibandha</option>
                                     <option value="Dinajpur">Dinajpur</option>
@@ -184,7 +186,7 @@
                             </div>
                             <div>
                                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Gender Classification</label>
-                                <select id="inputGender" class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-xl text-xs text-slate-300 focus:outline-none">
+                                <select id="inputGender" class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 px-3 py-2.5 rounded-xl text-xs focus:outline-none">
                                     <option value="Female">Female Beneficiary</option>
                                     <option value="Male">Male Beneficiary</option>
                                 </select>
@@ -207,7 +209,7 @@
                     <div class="bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-3xl p-6 flex flex-col justify-between shadow-sm">
                         <div>
                             <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Regional Distribution Metrics</h4>
-                            <p class="text-[11px] text-slate-500 mt-1">Compiled and rendered remotely via GitHub Actions Pipeline runner environment.</p>
+                            <p class="text-[11px] text-slate-500 mt-1">Compiled remotely via Python Environment pipelines.</p>
                         </div>
                         <div class="bg-[#0b0f19] border border-slate-800 rounded-2xl p-4 flex items-center justify-center mt-4 min-h-[200px]">
                             <img src="district_chart.png" alt="Python Generated Pipeline Chart" class="w-full h-auto object-contain max-h-[220px]" onerror="this.src='https://placehold.co/300x200/111827/94a3b8?text=Pipeline+Chart+Awaiting+Run'">
@@ -217,43 +219,27 @@
             </main>
         </div>
     </div>
-<script>
 
-// 1. SUPABASE CONNECTION PARAMETERS
+<script>
 const SUPABASE_PROJECT_URL = "https://eghmzetfcimllmenhhei.supabase.co";
 const SUPABASE_ANON_PUBLIC_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVnaG16ZXRmY2ltbGxtZW5oaGVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTA1MTAsImV4cCI6MjA5NzM2NjUxMH0.FLDImmDZ7pSlgcmoufnSENOhBPQAPQ20uZfYnHUQEq4";
 
-// 2. SUPABASE INITIALIZATION ENGINE WITH EXPLICIT ORIGIN HEADERS
 const supabaseClient = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_PUBLIC_KEY, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true
-  },
-  global: {
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-    }
-  }
+  auth: { persistSession: true, autoRefreshToken: true }
 });
 
-// State Tracking Cache variables
 let currentUserProfile = null;
 
-// Theme execution handler
 document.getElementById('themeToggle').addEventListener('click', () => { 
     document.documentElement.classList.toggle('dark');
 });
 
-// 3. MAIN WORKSPACE LOGIN AUTH ENTRANCE ENGINE
 async function handleUserLogin(event) {
-    if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-    }
+    if (event) event.preventDefault();
     
-    const emailInputElement = document.getElementById('login-email') || document.getElementById('authEmail');
+    const emailInputElement = document.getElementById('login-email');
     const emailInput = emailInputElement.value.trim().toLowerCase();
-    const loginBtn = document.getElementById('btn-login') || document.querySelector('button[onclick*="handleUserLogin"]');
+    const loginBtn = document.getElementById('btn-login');
     const errorBox = document.getElementById('auth-error');
     
     if (loginBtn) {
@@ -261,7 +247,6 @@ async function handleUserLogin(event) {
         loginBtn.innerText = "Verifying Credentials...";
     }
 
-    // 🛡️ THE TRY...CATCH BLOCK SAVES THE DAY HERE:
     try {
         const { data: userProfile, error } = await supabaseClient
             .from('app_users')
@@ -269,187 +254,122 @@ async function handleUserLogin(event) {
             .eq('email', emailInput)
             .maybeSingle();
 
-        if (error) throw error; // If Supabase returns a database error, jump straight to catch
+        if (error) throw error;
+        if (!userProfile) throw new Error("Access Denied: Unregistered email footprints.");
 
-        if (!userProfile) {
-            throw new Error("Access Denied: This email footprint is not registered.");
-        }
-
-        // Success! Proceed to dashboard
         currentUserProfile = userProfile;
         initializeDashboardLayout(currentUserProfile);
 
     } catch (err) {
-        // 🚨 CATCHES ANY NETWORK OR DATABASE ERRORS CLEANLY:
-        console.error("Authentication failure detailed log:", err);
-        
+        console.error(err);
         if (errorBox) {
             errorBox.innerText = err.message;
             errorBox.classList.remove('hidden');
-        } else {
-            alert(`Login Failed: ${err.message}`);
         }
-
         if (loginBtn) {
             loginBtn.disabled = false;
             loginBtn.innerText = "Verify Identity & Enter Workspace";
         }
     }
-    return false;
 }
-// 4. THE DASHBOARD VIEWPORT MATRIX SYSTEM 
+
 function initializeDashboardLayout(profile) {
-    console.log("Routing session for account profile parameters:", profile);
-    
-    // Map configuration labels smoothly to layout nodes
     document.getElementById('displayUserName').textContent = profile.user_name;
     document.getElementById('displayUserRole').textContent = profile.role;
     document.getElementById('displayUserAvatar').textContent = profile.user_name.substring(0, 2).toUpperCase();
 
     const adminPanel = document.getElementById('adminDataInputPanel');
-    
-    // Allow dynamic UI write interfaces for manager/master classes
     if (profile.role === 'HEAD_ME' || profile.role === 'UNDP_MASTER') {
         if (adminPanel) {
             adminPanel.classList.remove('hidden');
-            setTimeout(() => { 
-                adminPanel.classList.remove('scale-95', 'opacity-0'); 
-                adminPanel.classList.add('scale-100', 'opacity-100'); 
-            }, 50);
+            setTimeout(() => { adminPanel.classList.remove('scale-95', 'opacity-0'); }, 50);
         }
-    } else {
-        if (adminPanel) adminPanel.classList.add('hidden');
     }
 
-    // Slide out the gate shield overlay window panel smoothly
     document.getElementById('loginGateway').classList.add('scale-110', 'opacity-0', 'pointer-events-none');
+    setTimeout(() => { document.getElementById('loginGateway').classList.add('hidden'); }, 500);
     
     const mainApp = document.getElementById('mainDashboardApp');
     mainApp.classList.remove('hidden');
     setTimeout(() => { mainApp.classList.remove('opacity-0'); }, 100);
 
-    // Fetch live operational records indicators
-    updateDashboardMetrics('All Field Districts');
+    updateDashboardMetrics();
     renderInteractiveChartGraphics(['Rangpur', 'Gaibandha', 'Dinajpur', 'Kurigram'], [831, 460, 448, 414]);
 }
 
-// LIVE DATA RECORD COUNTERS INTEGRITY ENGINE
 async function updateDashboardMetrics(selectedDistrictName) {
-    let query = supabaseClient.from('ngo_project_records').select('*', { count: 'exact' });
-    
-    if (selectedDistrictName && selectedDistrictName !== 'All Field Districts') {
-        query = query.eq('district', selectedDistrictName);
-    }
-    
+    let query = supabaseClient.from('avcb_cases').select('*', { count: 'exact' });
     const { data, count, error } = await query;
-    if (error) return console.error("Metrics engine query rejection:", error.message);
+    if (error) return console.error(error.message);
 
-    document.getElementById('total-records-display').innerText = count;
+    document.getElementById('total-records-display').innerText = count || 0;
     
     if (data && data.length > 0) {
-        const females = data.filter(r => r.gender === 'Female').length;
+        const females = data.filter(r => r.beneficiary_gender === 'Female' || r.beneficiary_gender === 'FEMALE').length;
         const total = data.length;
-        
         document.getElementById('female-percentage-display').innerText = ((females / total) * 100).toFixed(1) + '%';
         document.getElementById('male-percentage-display').innerText = (((total - females) / total) * 100).toFixed(1) + '%';
     }
 }
 
-// CHARTS GRAPHICS CONTROLLER Builder
-function renderInteractiveChartGraphics(labelsArray, dataValuesArray) {
-    const canvasElement = document.getElementById('luxuryInteractiveChart');
-    if (!canvasElement) return;
-    const canvasCtx = canvasElement.getContext('2d');
-    new Chart(canvasCtx, {
-        type: 'bar',
-        data: {
-            labels: labelsArray,
-            datasets: [{ 
-                data: dataValuesArray, 
-                backgroundColor: '#10b981', 
-                borderRadius: 12, 
-                barPercentage: 0.45 
-            }]
-        },
-        options: { 
-            responsive: true, 
-            maintainAspectRatio: false, 
-            plugins: { legend: { display: false } },
-            scales: {
-                y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
-                x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
-            }
-        }
-    });
-}
-
-// EXIT APPLICATION AND TERMINATE SESSION PARAMETERS
-function executeSystemLogout() {
-    const gateway = document.getElementById('loginGateway');
-    gateway.classList.remove('scale-110', 'opacity-0', 'pointer-events-none');
-    
-    const mainApp = document.getElementById('mainDashboardApp');
-    mainApp.classList.add('hidden', 'opacity-0');
-    
-    currentUserProfile = null;
-    alert("🔒 Workspace session closed. Identity metrics flushed successfully.");
-}
-        async function sendDataToSupabaseCloud() {
-    alert("System Status: Data injection module ready. Hooking payload values...");
-}
-            async function submitNewAvcbCase(event) {
+async function submitNewAvcbCase(event) {
     if (event) event.preventDefault();
 
     const submitBtn = document.getElementById('btn-submit-case');
     const formErrorBox = document.getElementById('form-error-msg');
     
-    // 1. UI Loading Feedback
     submitBtn.disabled = true;
     submitBtn.innerText = "Syncing Case to Cloud...";
     if (formErrorBox) formErrorBox.classList.add('hidden');
 
-    // 2. Build the Payload exactly matching your database schema
     const casePayload = {
         case_number: document.getElementById('input-case-number').value.trim(),
-        union_id: currentUserProfile.union_id, // Automatically tagged via logged-in user
+        union_id: currentUserProfile ? currentUserProfile.union_id : null,
         filing_date: document.getElementById('input-filing-date').value,
-        case_type: document.getElementById('select-case-type').value, // 'CIVIL' or 'CRIMINAL'
+        case_type: document.getElementById('select-case-type').value,
         dispute_amount: parseFloat(document.getElementById('input-amount').value) || 0,
         beneficiary_name: document.getElementById('input-beneficiary-name').value.trim(),
-        beneficiary_gender: document.getElementById('select-gender').value, // 'MALE', 'FEMALE', etc.
-        status: 'PENDING' // Default starting status
+        beneficiary_gender: document.getElementById('select-gender').value,
+        beneficiary_age: parseInt(document.getElementById('input-beneficiary-age').value) || null,
+        status: 'PENDING'
     };
 
     try {
-        // 3. Insert into your existing table
-        const { data, error } = await supabaseClient
-            .from('avcb_cases')
-            .insert([casePayload]);
-
+        const { error } = await supabaseClient.from('avcb_cases').insert([casePayload]);
         if (error) throw error;
 
-        // 4. Success Path
         alert(`🎉 Case ${casePayload.case_number} successfully registered!`);
-        document.getElementById('case-entry-form').reset(); // Clear form
-        
-        // Refresh dashboard metrics in real-time
+        document.getElementById('case-entry-form').reset();
         updateDashboardMetrics(); 
 
     } catch (err) {
-        console.error("Data entry insertion failed:", err.message);
+        console.error(err);
         if (formErrorBox) {
             formErrorBox.innerText = `⚠️ Sync Failure: ${err.message}`;
             formErrorBox.classList.remove('hidden');
         }
     } finally {
-        // 5. Reset Button State
         submitBtn.disabled = false;
         submitBtn.innerText = "Submit & Sync Case Record";
     }
 }
-            // Add this line at the bottom of your script tags so the browser listens for the submit action
-document.getElementById('case-entry-form').addEventListener('submit', submitNewAvcbCase);
-    </script>
 
+function renderInteractiveChartGraphics(labelsArray, dataValuesArray) {
+    const canvasElement = document.getElementById('luxuryInteractiveChart');
+    if (!canvasElement) return;
+    new Chart(canvasElement.getContext('2d'), {
+        type: 'bar',
+        data: {
+            labels: labelsArray,
+            datasets: [{ data: dataValuesArray, backgroundColor: '#10b981', borderRadius: 12, barPercentage: 0.45 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+    });
+}
+
+function executeSystemLogout() {
+    location.reload();
+}
+</script>
 </body>
 </html>
