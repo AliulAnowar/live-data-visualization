@@ -16,15 +16,21 @@
     </script>
 </head>
 <body class="bg-[#f8fafc] text-[#1e293b] dark:bg-[#0b0f19] dark:text-[#f1f5f9] min-h-screen transition-colors duration-300 flex flex-col font-sans">
- <div id="loginGateway" class="flex items-center justify-center min-h-screen bg-gray-100">
-    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md text-center">
-        <h2 class="text-2xl font-bold mb-6 text-gray-800">M&E Workspace Authentication</h2>
+<div id="loginGateway" class="flex items-center justify-center min-h-screen bg-slate-100">
+    <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md text-center border border-gray-200">
+        
+        <div class="flex justify-center items-center gap-4 mb-6">
+            <img src="assets/undp-logo.png" alt="UNDP Logo" class="h-14 w-auto object-contain fallback-logo">
+            <img src="assets/esdo-logo.png" alt="ESDO Logo" class="h-14 w-auto object-contain fallback-logo">
+        </div>
+
+        <h2 class="text-xl font-bold mb-6 text-gray-800">AVCB Real-Time M&E Portal</h2>
         
         <form id="login-form" onsubmit="handleUserLogin(event)" class="space-y-4 text-left">
             <div>
                 <label class="block text-sm font-medium text-gray-700">Court Officer Email</label>
                 <input type="email" id="login-email" placeholder="name@ngo.org" required 
-                       class="mt-1 w-full p-2 border rounded-md focus:ring-blue-500 focus:border-blue-500">
+                       class="mt-1 w-full p-2 border border-gray-300 rounded-md text-gray-900 bg-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:text-gray-900">
             </div>
             
             <div id="auth-error" class="hidden text-sm text-red-600 bg-red-50 p-2 rounded"></div>
@@ -35,63 +41,8 @@
         </form>
     </div>
 </div>
-
-<div id="mainDashboardApp" class="hidden min-h-screen bg-gray-50 p-6">
-    
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        </div>
-
-    <div class="bg-white p-6 rounded-lg shadow-md max-w-xl mx-auto">
-        <h3 class="text-xl font-bold mb-4 text-gray-800">AVCB Daily Case Registry</h3>
-        
-        <form id="case-entry-form" onsubmit="submitNewAvcbCase(event)" class="space-y-4 text-left">
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Case Number</label>
-                <input type="text" id="input-case-number" placeholder="VC-RANG-MITHA-2026-042" required class="mt-1 w-full p-2 border rounded-md">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Filing Date</label>
-                <input type="date" id="input-filing-date" required class="mt-1 w-full p-2 border rounded-md">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Case Type</label>
-                <select id="select-case-type" required class="mt-1 w-full p-2 border rounded-md">
-                    <option value="" disabled selected>Select Type</option>
-                    <option value="CIVIL">CIVIL</option>
-                    <option value="CRIMINAL">CRIMINAL</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Dispute Amount (BDT)</label>
-                <input type="number" id="input-amount" placeholder="Legal limit up to 50,000 BDT" required class="mt-1 w-full p-2 border rounded-md">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Beneficiary Name</label>
-                <input type="text" id="input-beneficiary-name" placeholder="Full Name" required class="mt-1 w-full p-2 border rounded-md">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Beneficiary Gender</label>
-                <select id="select-gender" required class="mt-1 w-full p-2 border rounded-md">
-                    <option value="" disabled selected>Select Gender</option>
-                    <option value="MALE">MALE</option>
-                    <option value="FEMALE">FEMALE</option>
-                </select>
-            </div>
-
-            <div id="form-error-msg" class="hidden text-sm text-red-600 bg-red-50 p-2 rounded"></div>
-
-            <button type="submit" id="btn-submit-case" class="w-full bg-green-600 text-white p-2 rounded-md font-semibold hover:bg-green-700 transition">
-                Submit & Sync Case Record
-            </button>
-        </form>
-    </div>
-</div>
-            
-    <div id="auth-error" class="hidden mt-4 p-3 bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 text-xs rounded-xl text-center font-medium border border-red-200 dark:border-red-900/50"></div>
-        </div>
-    </div>
-
-    <div id="mainDashboardApp" class="opacity-0 transition-opacity duration-700 hidden flex-1 flex flex-col w-full">
+<div id="mainDashboardApp" class="opacity-0 transition-opacity duration-700 hidden flex-1 flex flex-col w-full">
+        <!-- DASHBOARD HEADER NAVIGATION BAR -->
         <header class="bg-white dark:bg-[#111827] border-b border-slate-200/80 dark:border-slate-800/50 px-4 sm:px-8 py-4 flex flex-col md:flex-row gap-4 items-center justify-between w-full">
             <div class="flex items-center gap-3">
                 <img src="image/logo.svg" alt="Logo" class="h-10 w-10" onerror="this.src='https://placehold.co/40x40?text=ME'">
@@ -115,7 +66,10 @@
             </div>
         </header>
 
+        <!-- DASHBOARD SPLIT WORKSPACE CONTENT -->
         <div class="flex flex-col md:flex-row gap-6 p-4 sm:p-6 lg:p-8 w-full max-w-[1600px] mx-auto flex-1 items-start">
+            
+            <!-- LEFT ASIDE: CONTROL FILTER PANELS -->
             <aside class="w-full md:w-64 shrink-0 space-y-4">
                 <div class="bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800/50 p-5 rounded-2xl shadow-sm">
                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Dataset Criteria Filter</label>
@@ -132,14 +86,17 @@
                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest">Column Matrices</label>
                     <button class="w-full text-left text-xs text-emerald-400 bg-emerald-500/10 px-3 py-2 rounded-xl font-medium flex items-center gap-2">📍 Location Matrix Active</button>
                     <button class="w-full text-left text-xs text-blue-400 bg-blue-500/10 px-3 py-2 rounded-xl font-medium flex items-center gap-2">👥 Gender Matrix Active</button>
-                    <div class="pt-2 border-t border-slate-800 text-[10px] text-slate-500">
+                    <div class="pt-2 border-t border-slate-200 dark:border-slate-800 text-[10px] text-slate-500">
                         <p>System Core: Python Pipeline Engine</p>
                         <p>Pipeline Build: 2026-06-17 Active</p>
                     </div>
                 </div>
             </aside>
 
+            <!-- RIGHT MAIN PANEL: STATISTICS, INPUTS & VISUALIZATIONS -->
             <main class="flex-1 space-y-6 w-full min-w-0">
+                
+                <!-- ROW 1: METRIC CARD STRIP -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     <div class="bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-2xl p-6 shadow-sm">
                         <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Active Records</div>
@@ -158,6 +115,66 @@
                     </div>
                 </div>
 
+                <!-- ROW 2: NEW AVCB CASE ENTRY FORM MODULE -->
+                <div class="bg-white dark:bg-[#111827] border border-slate-200/80 dark:border-slate-800/50 p-6 rounded-3xl shadow-sm max-w-xl mx-auto w-full">
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-800 dark:text-white mb-4 flex items-center gap-2">📝 AVCB Daily Case Registry</h3>
+                    
+                    <form id="case-entry-form" onsubmit="submitNewAvcbCase(event)" class="space-y-4 text-left">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Case Number</label>
+                            <input type="text" id="input-case-number" placeholder="VC-RANG-MITHA-2026-042" required 
+                                   class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 px-3 py-2 rounded-xl text-xs focus:outline-none focus:ring-1 focus:ring-emerald-500">
+                        </div>
+                        
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Filing Date</label>
+                                <input type="date" id="input-filing-date" required 
+                                       class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 px-3 py-2 rounded-xl text-xs focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Case Type</label>
+                                <select id="select-case-type" required 
+                                        class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-300 px-3 py-2 rounded-xl text-xs focus:outline-none">
+                                    <option value="" disabled selected>Select Type</option>
+                                    <option value="CIVIL">CIVIL</option>
+                                    <option value="CRIMINAL">CRIMINAL</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Dispute Amount (BDT)</label>
+                            <input type="number" id="input-amount" placeholder="Legal limit up to 50,000 BDT" required 
+                                   class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 px-3 py-2 rounded-xl text-xs focus:outline-none">
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Beneficiary Name</label>
+                                <input type="text" id="input-beneficiary-name" placeholder="Full Name" required 
+                                       class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 px-3 py-2 rounded-xl text-xs focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Beneficiary Gender</label>
+                                <select id="select-gender" required 
+                                        class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-300 px-3 py-2 rounded-xl text-xs focus:outline-none">
+                                    <option value="" disabled selected>Select Gender</option>
+                                    <option value="MALE">MALE</option>
+                                    <option value="FEMALE">FEMALE</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="form-error-msg" class="hidden text-xs text-red-500 bg-red-500/10 p-2.5 rounded-xl border border-red-500/20"></div>
+
+                        <button type="submit" id="btn-submit-case" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2.5 px-4 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-1.5">
+                            📤 Submit & Sync Case Record
+                        </button>
+                    </form>
+                </div>
+
+                <!-- ROW 3: HIDDEN ADMIN PANEL CONTAINER -->
                 <div id="adminDataInputPanel" class="hidden transform transition-all duration-500 scale-95 opacity-0">
                     <div class="bg-white dark:bg-[#111827] border border-dashed border-emerald-500/30 rounded-3xl p-6 shadow-md space-y-4">
                         <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-2">⚡ Data Input Control Protocol (Admin Mode Enabled)</h3>
@@ -187,6 +204,7 @@
                     </div>
                 </div>
 
+                <!-- ROW 4: DATA CHARTS VISUALIZATION TRACK -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="lg:col-span-2 bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
                         <div class="relative h-72 w-full">
@@ -206,7 +224,7 @@
             </main>
         </div>
     </div>
-        <script>
+<script>
 
 // 1. SUPABASE CONNECTION PARAMETERS
 const SUPABASE_PROJECT_URL = "https://eghmzetfcimllmenhhei.supabase.co";
