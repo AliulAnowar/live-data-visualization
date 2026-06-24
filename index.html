@@ -15,7 +15,8 @@
         }
     </script>
 </head>
-<body class="bg-[#f8fafc] text-[#1e293b] dark:bg-[#0b0f19] dark:text-[#f1f5f9] min-h-screen transition-colors duration-300 flex flex-col font-sans">
+    <body class="bg-[#f8fafc] text-[#1e293b] dark:bg-[#0b0f19] dark:text-[#f1f5f9] min-h-screen transition-colors duration-300 flex flex-col font-sans">
+
 <div id="loginGateway" class="flex items-center justify-center min-h-screen bg-slate-100">
     <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md text-center border border-gray-200">
         
@@ -28,7 +29,7 @@
         <form id="login-form" onsubmit="handleUserLogin(event)" class="space-y-4 text-left">
             <div>
                 <label class="block text-sm font-medium text-gray-700">Court Officer Email</label>
-                <input type="email" id="login-email" placeholder="name@ngo.org" required 
+                <input type="email" id="login-email" placeholder="officer@avcb-portal.org" required 
                        class="mt-1 w-full p-2 border border-gray-300 rounded-md text-gray-900 bg-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:text-gray-900">
             </div>
             
@@ -40,9 +41,8 @@
         </form>
     </div>
 </div>
-<div id="mainDashboardApp" class="opacity-0 transition-opacity duration-700 hidden flex-1 flex flex-col w-full">
-       <div id="mainDashboardApp" class="opacity-0 transition-opacity duration-700 hidden flex-1 flex flex-col w-full bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 min-h-screen">
-        <!-- DASHBOARD HEADER NAVIGATION BAR -->
+
+<div id="mainDashboardApp" class="opacity-0 transition-opacity duration-700 hidden flex-1 flex flex-col w-full bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 min-h-screen">
         <header class="bg-white dark:bg-[#111827] border-b border-slate-200 dark:border-slate-800 px-4 sm:px-8 py-4 flex flex-col md:flex-row gap-4 items-center justify-between w-full shadow-sm">
             <div class="flex items-center gap-3">
                 <img src="image/logo.svg" alt="Logo" class="h-10 w-10" onerror="this.src='https://placehold.co/40x40?text=ME'">
