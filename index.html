@@ -323,8 +323,9 @@ async function submitNewAvcbCase(event) {
     if (formErrorBox) formErrorBox.classList.add('hidden');
 
     const casePayload = {
+        ngo_id: currentUserProfile?.ngo_id,
+        union_id: currentUserProfile?.union_id,
         case_id: document.getElementById('input-case-number').value.trim(),
-        union_id: currentUserProfile ? currentUserProfile.union_id : null,
         filing_date: document.getElementById('input-filing-date').value,
         case_type: document.getElementById('select-case-type').value,
         dispute_amount: parseFloat(document.getElementById('input-amount').value) || 0,
@@ -332,10 +333,12 @@ async function submitNewAvcbCase(event) {
         beneficiary_gender: document.getElementById('select-gender').value,
         beneficiary_age: parseInt(document.getElementById('input-beneficiary-age').value) || null,
         current_status: 'PENDING'
-    };
+        };
 
     try {
-        const { error } = await supabaseClient.from('avcb_cases').insert([casePayload]);
+        const { data, error } = await supabaseClient
+        .from('avcb_cases')
+        .insert([casePayload]);
         if (error) throw error;
 
         alert(`🎉 Case ${casePayload.case_number} successfully registered!`);
