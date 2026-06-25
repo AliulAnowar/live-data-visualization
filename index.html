@@ -331,7 +331,7 @@ async function submitNewAvcbCase(event) {
         beneficiary_name: document.getElementById('input-beneficiary-name').value.trim(),
         beneficiary_gender: document.getElementById('select-gender').value,
         beneficiary_age: parseInt(document.getElementById('input-beneficiary-age').value) || null,
-        status: 'PENDING'
+        current_status: 'PENDING'
     };
 
     try {
