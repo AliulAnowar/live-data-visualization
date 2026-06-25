@@ -323,7 +323,7 @@ async function submitNewAvcbCase(event) {
     if (formErrorBox) formErrorBox.classList.add('hidden');
 
     const casePayload = {
-        case_number: document.getElementById('input-case-number').value.trim(),
+        case_id: document.getElementById('input-case-number').value.trim(),
         union_id: currentUserProfile ? currentUserProfile.union_id : null,
         filing_date: document.getElementById('input-filing-date').value,
         case_type: document.getElementById('select-case-type').value,
