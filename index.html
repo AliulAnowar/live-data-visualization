@@ -245,7 +245,7 @@ document.getElementById('themeToggle').addEventListener('click', () => {
 async function handleUserLogin(event) {
     if (event) event.preventDefault();
     const emailInputElement = document.getElementById('login-email').addEventListener('click', function() {
-    const emailInput = document.getElementById('officer-email').value.trim();
+    const emailInput = document.getElementById('login-email').value.trim();
     
     // Call the smart generator safely here!
     initializeSmartCaseID(emailInput);
