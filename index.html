@@ -145,7 +145,16 @@
                                            class="w-full bg-slate-50 dark:bg-[#1f2937] border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 px-3 py-2 rounded-xl text-xs focus:outline-none">
                                 </div>
                             </div>
-
+                                <!-- Add the id and the oninput trigger to your search input element -->
+                                    <div class="search-box-container">
+                                        <input 
+                                            type="text" 
+                                            id="search-case-input" 
+                                            oninput="searchCaseRegistry()" 
+                                            placeholder="🔍 Search unsolved cases by Case ID (e.g., rng-gng...)" 
+                                            class="form-control"
+                                        />
+                                    </div>
                             <div id="form-error-msg" class="hidden text-xs text-red-500 bg-red-500/10 p-2.5 rounded-xl border border-red-500/20"></div>
 
                             <button type="submit" id="btn-submit-case" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2.5 px-4 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-1.5">
@@ -153,8 +162,7 @@
                             </button>
                         </form>
                     </div>
-
-                    <div class="space-y-4 w-full">
+                <div class="space-y-4 w-full">
                         <div class="bg-white dark:bg-[#111827] border border-slate-200/60 dark:border-slate-800/40 rounded-2xl p-5 shadow-sm">
                             <div class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Total Active Records</div>
                             <div id="total-records-display" class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mt-1">2153</div>
@@ -372,6 +380,118 @@ function renderInteractiveChartGraphics(labelsArray, dataValuesArray) {
 
 function executeSystemLogout() {
     location.reload();
+}
+    // 1. Get the current user's profile prefixes
+const { data: profile } = await supabase
+  .from('app_users')
+  .select('unions(prefix), upazilas(prefix), districts(prefix)')
+  .eq('email', loggedInUserEmail)
+  .single();
+
+const dist = profile.unions.upazilas.districts.prefix.toLowerCase();
+const upaz = profile.unions.upazilas.prefix.toLowerCase();
+const uni = profile.unions.prefix.toLowerCase();
+const prefixCombined = `${dist}-${upaz}-${uni}-`;
+
+// 2. Fetch the highest case count for this specific union area
+const { count } = await supabase
+  .from('avcb_cases')
+  .select('*', { count: 'exact', head: true })
+  .like('case_id', `${prefixCombined}%`);
+
+// 3. Display the next ID in a disabled input box
+const nextCaseId = `${prefixCombined}${count + 1}`;
+document.getElementById('case-id-input').value = nextCaseId;
+document.getElementById('case-id-input').disabled = true;
+    async function setTamperProofDate() {
+  try {
+    // Fetch live world time independent of OS settings
+    const response = await fetch('https://worldtimeapi.org/api/timezone/Asia/Dhaka');
+    const timeData = await response.json();
+    // Format to YYYY-MM-DD
+    const trueDate = timeData.datetime.split('T')[0]; 
+    
+    const dateInput = document.getElementById('filing-date-input');
+    dateInput.value = trueDate;
+    dateInput.readOnly = true; // Locks the field visually
+    dateInput.style.pointerEvents = 'none'; // Blocks click changes
+  } catch (error) {
+    // Fallback: If world clock fails, let PostgreSQL stamp it automatically with CURRENT_DATE
+    console.warn("Using database default timestamp layer.");
+  }
+}
+    function validateCaseForm() {
+  const disputeAmount = parseFloat(document.getElementById('amount-input').value);
+  const beneficiaryAge = parseInt(document.getElementById('age-input').value);
+  
+  // Rule 3: Amount Limit Cap 50,000 BDT
+  if (disputeAmount > 50000) {
+    alert("❌ Invalid Figure Amount: Village Court jurisdiction is limited to a maximum of 50,000 BDT.");
+    return false;
+  }
+  
+  // Rule 4: Real Human Age Cap (< 100)
+  if (beneficiaryAge <= 0 || beneficiaryAge >= 100) {
+    alert("❌ Invalid Age: Please input a correct age profile under 100 years.");
+    return false;
+  }
+  
+  return true; // Form is clean and safe to submit!
+}
+    // Fetch pending cases and calculate if they are over the 3-month resolution deadline
+async function loadActiveCaseRegistry() {
+  const { data: cases, error } = await supabase
+    .from('avcb_cases')
+    .select('*')
+    .eq('current_status', 'PENDING') // Shows only unsolved records
+    .order('filing_date', { ascending: true });
+
+  const container = document.getElementById('unsolved-list-container');
+  container.innerHTML = '';
+
+  cases.forEach(item => {
+    // Check if the case has breached the 3-month statutory rule
+    const filingDateTime = new Date(item.filing_date).getTime();
+    const threeMonthsInMs = 90 * 24 * 60 * 60 * 1000;
+    const isOverdue = (Date.now() - filingDateTime) > threeMonthsInMs;
+
+    container.innerHTML += `
+      <div class="case-card ${isOverdue ? 'border-red-500 bg-red-950/20' : 'border-slate-700'}">
+        <p><strong>ID:</strong> ${item.case_id}</p>
+        <p><strong>Beneficiary:</strong> ${item.beneficiary_name}</p>
+        <p><strong>Filing Date:</strong> ${item.filing_date}</p>
+        ${isOverdue ? '<span class="text-red-400 font-bold">⚠️ Over 3 Months Unresolved</span>' : ''}
+        
+        <button onclick="resolveCase('${item.id}')" class="btn-resolve">Mark Solved</button>
+      </div>
+    `;
+  });
+}
+
+// Action function to update case status on click
+async function resolveCase(guid) {
+  const { error } = await supabase
+    .from('avcb_cases')
+    .update({ current_status: 'RESOLVED', resolution_date: new Date().toISOString().split('T')[0] })
+    .eq('id', guid);
+
+  if (!error) {
+    alert("Case resolved successfully!");
+    loadActiveCaseRegistry(); // Instantly refreshes list
+  }
+}
+    function searchCaseRegistry() {
+  const filterValue = document.getElementById('search-case-input').value.toLowerCase();
+  const caseCards = document.querySelectorAll('.case-card');
+
+  caseCards.forEach(card => {
+    const caseIdText = card.querySelector('p').textContent.toLowerCase();
+    if (caseIdText.includes(filterValue)) {
+      card.style.display = "block"; // Shows card match
+    } else {
+      card.style.display = "none";  // Hides non-matching entries
+    }
+  });
 }
 </script>
 </body>
