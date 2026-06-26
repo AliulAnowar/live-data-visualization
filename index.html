@@ -247,7 +247,13 @@ async function handleUserLogin(event) {
     
     const emailInputElement = document.getElementById('login-email');
     const emailInput = emailInputElement.value.trim().toLowerCase();
-    const loginBtn = document.getElementById('btn-login');
+    const loginBtn = document.getElementById('btn-login').addEventListener("click", async function() {
+    const { data: profile } = await supabase
+        .from('app_users')
+        .select('unions(prefix), upazilas(prefix), districts(prefix)')
+        .eq('email', loggedInUserEmail)
+        .single();
+    });
     const errorBox = document.getElementById('auth-error');
     
     if (loginBtn) {
@@ -382,11 +388,11 @@ function executeSystemLogout() {
     location.reload();
 }
     // 1. Get the current user's profile prefixes
-const { data: profile } = await supabase
-  .from('app_users')
-  .select('unions(prefix), upazilas(prefix), districts(prefix)')
-  .eq('email', loggedInUserEmail)
-  .single();
+//const { data: profile } = await supabase
+  //.from('app_users')
+  //.select('unions(prefix), upazilas(prefix), districts(prefix)')
+  //.eq('email', loggedInUserEmail)
+  //.single();
 
 const dist = profile.unions.upazilas.districts.prefix.toLowerCase();
 const upaz = profile.unions.upazilas.prefix.toLowerCase();
