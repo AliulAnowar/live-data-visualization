@@ -243,14 +243,27 @@ document.getElementById('themeToggle').addEventListener('click', () => {
 });
 
 async function handleUserLogin(event) {
-    if (event) event.preventDefault();
-    const emailInputElement = document.getElementById('login-email').addEventListener('click', function() {
-    const emailInput = document.getElementById('login-email').value.trim();
-    
-    // Call the smart generator safely here!
-    initializeSmartCaseID(emailInput);
-});
-    
+  if (event) event.preventDefault();
+  
+  // 1. Target your updated input ID directly in the main function block
+  const emailInputElement = document.getElementById('login-email');
+  
+  if (!emailInputElement) {
+    console.error("Could not find the HTML element with ID 'login-email'");
+    return;
+  }
+
+  const emailInput = emailInputElement.value.trim();
+
+  // 2. Safe Guardrail Check: Ensure they actually typed something
+  if (!emailInput) {
+    alert("Please enter a valid Court Officer Email address.");
+    return;
+  }
+
+  // 3. Fire the smart case generator sequence directly
+  await initializeSmartCaseID(emailInput);
+}
     const loginBtn = document.getElementById('btn-login').addEventListener("click", async function() {
     const { data: profile } = await supabase
         .from('app_users')
