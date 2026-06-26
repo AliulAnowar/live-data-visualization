@@ -462,64 +462,6 @@ async function initializeSmartCaseID(loggedInUserEmail) {
     console.error("Dashboard Identity Sync Error:", err.message);
   }
 }
-// 3. Display the next ID in a disabled input box
-//const nextCaseId = `${prefixCombined}${count + 1}`;
-//document.getElementById('case-id-input').value = nextCaseId;
-//document.getElementById('case-id-input').disabled = true;
-    // Wrap EVERYTHING inside a clean async block!
-async function initializeSmartCaseID(loggedInUserEmail) {
-  try {
-    // 1. Get the current user's location prefix links safely using the nested tree format
-    const { data: profile, error: profileError } = await supabase
-      .from('app_users')
-      .select(`
-        unions (
-          prefix,
-          upazilas (
-            prefix,
-            districts (
-              prefix
-            )
-          )
-        )
-      `)
-      .eq('email', loggedInUserEmail)
-      .single();
-
-    if (profileError || !profile?.unions) {
-      console.error("Could not resolve location mappings for this user account.");
-      return;
-    }
-
-    // Extract the lowercase prefix letters cleanly from the nested relations
-    const dist = profile.unions.upazilas.districts.prefix.toLowerCase();
-    const upaz = profile.unions.upazilas.prefix.toLowerCase();
-    const uni = profile.unions.prefix.toLowerCase();
-    const prefixCombined = `${dist}-${upaz}-${uni}-`; // e.g., 'rng-gng-gjg-'
-
-    // 2. Safe count calculation using the await keyword inside our async wrapper
-    const { count, error: countError } = await supabase
-      .from('avcb_cases')
-      .select('*', { count: 'exact', head: true })
-      .like('case_id', `${prefixCombined}%`);
-
-    if (countError) throw countError;
-
-    // 3. Formulate the next incremented case tracking ID string
-    const nextSequenceNum = (count || 0) + 1;
-    const finalSmartID = `${prefixCombined}${nextSequenceNum}`;
-
-    // 4. Push directly into your disabled frontend form input box
-    const caseInputHtmlElement = document.getElementById('case-id-input');
-    if (caseInputHtmlElement) {
-       caseInputHtmlElement.value = finalSmartID;
-       caseInputHtmlElement.disabled = true; // Protects integrity layer from human edits
-    }
-
-  } catch (err) {
-    console.error("Dashboard Identity Sync Error:", err.message);
-  }
-}
     async function setTamperProofDate() {
   try {
     // Fetch live world time independent of OS settings
