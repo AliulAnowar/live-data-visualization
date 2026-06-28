@@ -440,7 +440,7 @@ async function submitNewAvcbCase(event) {
     const casePayload = {
         ngo_id: currentUserProfile?.ngo_id,
         union_id: currentUserProfile?.union_id,
-        //case_id: document.getElementById('input-case-number').value.trim(),
+        case_id:parseInt(document.getElementById('input-case-number').value, 10),
         filing_date: cleanIsoDate,
         case_type: document.getElementById('select-case-type').value,
         dispute_amount: parseFloat(document.getElementById('input-amount').value) || 0,
