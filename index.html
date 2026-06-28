@@ -430,7 +430,7 @@ async function submitNewAvcbCase(event) {
     
     submitBtn.disabled = true;
     submitBtn.innerText = "Syncing Case to Cloud...";
-    if (formErrorBox) formErrorBox.classList.add('hidden');
+   // if (formErrorBox) formErrorBox.classList.add('hidden');
 
     // Parse DD/MM/YYYY text back to a clean ISO date string for Supabase storage engine
     const visualDateString = document.getElementById('input-filing-date').value;
