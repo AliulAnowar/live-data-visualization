@@ -132,7 +132,7 @@
                                 </div>
                             </div>
 
-                           
+                           <div id="form-error-msg" class="hidden text-xs text-red-500 bg-red-500/10 p-2.5 rounded-xl border border-red-500/20"></div>
 
                             <button type="submit" id="btn-submit-case" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-2.5 px-4 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-1.5">
                                 📤 Submit & Sync Case Record
@@ -426,11 +426,11 @@ async function submitNewAvcbCase(event) {
     if (!validateCaseForm()) return;
 
     const submitBtn = document.getElementById('btn-submit-case');
-    //const formErrorBox = document.getElementById('form-error-msg');
+    const formErrorBox = document.getElementById('form-error-msg');
     
     submitBtn.disabled = true;
     submitBtn.innerText = "Syncing Case to Cloud...";
-   // if (formErrorBox) formErrorBox.classList.add('hidden');
+   if (formErrorBox) formErrorBox.classList.add('hidden');
 
     // Parse DD/MM/YYYY text back to a clean ISO date string for Supabase storage engine
     const visualDateString = document.getElementById('input-filing-date').value;
