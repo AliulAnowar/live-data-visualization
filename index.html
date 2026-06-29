@@ -425,8 +425,8 @@ async function submitNewAvcbCase(event) {
     const cleanNumericCaseId = parseInt(calculatedCaseIdText, 10) || 1;
 
     // SECURE FIX: Safely parse relationship values to numbers before sending to PostgreSQL
-    const cleanNgoId = currentUserProfile?.ngo_id ? parseInt(currentUserProfile.ngo_id, 10) : null;
-    const cleanUnionId = currentUserProfile?.union_id ? parseInt(currentUserProfile.union_id, 10) : null;
+    const cleanNgoId = currentUserProfile?.ngo_id ? String(currentUserProfile.ngo_id, 10) : null;
+    const cleanUnionId = currentUserProfile?.union_id ? String(currentUserProfile.union_id, 10) : null;
 
     const casePayload = {
         case_id: cleanNumericCaseId, // Pure integer number
