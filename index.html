@@ -421,28 +421,23 @@ async function submitNewAvcbCase(event) {
     const [d, m, y] = visualDateString.split('/');
     const cleanIsoDate = `${y}-${m}-${d}`;
 
-    // Grab the value directly from your auto-incremented UI field 
-    //const calculatedCaseIdText = document.getElementById('input-case-number').value;
-    //const cleanNumericCaseId = parseInt(calculatedCaseIdText, 10) || 1;
-// Convert the text IDs to clean integers before sending them to Supabase!
-    //const cleanNgoId = currentUserProfile?.ngo_id ? parseInt(currentUserProfile.ngo_id, 10) : null;
-    //const cleanUnionId = currentUserProfile?.union_id ? parseInt(currentUserProfile.union_id, 10) : null;
+    // IMPORTANT: Use the UUID strings directly from your profile, 
+    // DO NOT use parseInt() on them.
     const casePayload = {
-    // case_id is your regular incrementing case number integer
-    case_id: parseInt(document.getElementById('input-case-number').value, 10), 
-    
-    // Convert your user relationship tracking keys to integers to avoid column mismatch
-    ngo_id: currentUserProfile?.ngo_id ? parseInt(currentUserProfile.ngo_id, 10) : null,         
-    union_id: currentUserProfile?.union_id ? parseInt(currentUserProfile.union_id, 10) : null,     
-    
-    filing_date: cleanIsoDate,
-    case_type: document.getElementById('select-case-type').value,
-    dispute_amount: parseFloat(document.getElementById('input-amount').value) || 0,
-    beneficiary_name: document.getElementById('input-beneficiary-name').value.trim(),
-    beneficiary_gender: document.getElementById('select-gender').value,
-    beneficiary_age: parseInt(document.getElementById('input-beneficiary-age').value, 10) || null,
-    current_status: 'PENDING'
-};
+        case_id: parseInt(document.getElementById('input-case-number').value, 10), 
+        
+        // Pass these as strings (they are UUIDs)
+        ngo_id: currentUserProfile?.ngo_id,         
+        union_id: currentUserProfile?.union_id,     
+        
+        filing_date: cleanIsoDate,
+        case_type: document.getElementById('select-case-type').value,
+        dispute_amount: parseFloat(document.getElementById('input-amount').value) || 0,
+        beneficiary_name: document.getElementById('input-beneficiary-name').value.trim(),
+        beneficiary_gender: document.getElementById('select-gender').value,
+        beneficiary_age: parseInt(document.getElementById('input-beneficiary-age').value, 10) || null,
+        current_status: 'PENDING'
+    };
   
     try {
         const { error } = await supabaseClient
@@ -454,15 +449,12 @@ async function submitNewAvcbCase(event) {
         alert("🎉 Case successfully recorded!");
 
         // Reset form inputs
-        document.getElementById('select-case-type').value = "";
-        document.getElementById('input-amount').value = "";
-        document.getElementById('input-beneficiary-name').value = "";
-        document.getElementById('select-gender').value = "";
-        document.getElementById('input-beneficiary-age').value = "";
+        document.getElementById('case-entry-form').reset();
 
-        // Instantly reload your panels to display changes in real-time
+        // Refresh panels
         await initializeSmartCaseID(currentUserProfile.email);
         await loadActiveCaseRegistry();
+        await updateDashboardMetrics();
 
     } catch (err) {
         console.error("Submission Failure:", err.message);
