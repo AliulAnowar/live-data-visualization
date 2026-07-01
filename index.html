@@ -311,7 +311,8 @@ async function initializeSmartCaseID(loggedInUserEmail) {
     // Set the auto-calculated increment value into your form field instantly!
     const caseNumberField = document.getElementById('input-case-number');
     if (caseNumberField) {
-      caseNumberField.value = nextCaseIdNumber.toString();
+      //caseNumberField.value = nextCaseIdNumber.toString();
+      caseNumberField.value = nextCaseIdNumber;
     }
 
     // --- METRIC PANEL RENDERING (REAL TIME INPUT) ---
