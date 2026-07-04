@@ -223,15 +223,18 @@ async function handleUserLogin(event) {
   if (errorBox) errorBox.classList.add('hidden');
 
   try {
-      const { data: userProfile, error } = await supabaseClient
-          .from('app_users')
-          .select('id, email, user_name, role, ngo_id, district_id, upazila_id, union_id')
-          .eq('email', emailInput)
-          .maybeSingle();
+      const { data: userData, error: userError } = await supabase
+     .from('app_users')
+     .select('*')
+     .eq('email', userEmail)
+     .single();
 
-      if (error) throw error;
-      if (!userProfile) throw new Error("Access Denied: Unregistered email footprints.");
-
+      if (userData) {
+      console.log("Logged-in User Profile Details:", userData);
+     // This will show you exactly what ID, NGO_ID, and UNION_ID the system is working with
+        } else {
+        console.error("User fetch error:", userError);
+        }
       currentUserProfile = userProfile;
       
       // Fire configuration handshakes sequentially 
@@ -423,13 +426,13 @@ async function submitNewAvcbCase(event) {
 
     // IMPORTANT: Use the UUID strings directly from your profile, 
     // DO NOT use parseInt() on them.
-    const casePayload = {
+       const casePayload = {
         case_id: parseInt(document.getElementById('input-case-number').value, 10), 
         
         // Pass these as strings (they are UUIDs)
         ngo_id: currentUserProfile?.ngo_id,         
         union_id: currentUserProfile?.union_id,     
-        
+        created_at:cleanIsoDate,
         filing_date: cleanIsoDate,
         case_type: document.getElementById('select-case-type').value,
         dispute_amount: parseFloat(document.getElementById('input-amount').value) || 0,
@@ -437,8 +440,9 @@ async function submitNewAvcbCase(event) {
         beneficiary_gender: document.getElementById('select-gender').value,
         beneficiary_age: parseInt(document.getElementById('input-beneficiary-age').value, 10) || null,
         current_status: 'PENDING'
+        
     };
-  
+     console.log("Submitting payload to Supabase:", casePayload);  
     try {
         const { error } = await supabaseClient
             .from('avcb_cases')
