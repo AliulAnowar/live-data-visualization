@@ -191,6 +191,7 @@ const SUPABASE_ANON_PUBLIC_KEY = "sb_publishable_qKZSUusEOjQLrQjkPGUjSw_d_WVUliX
 
 const supabaseClient = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_PUBLIC_KEY, {
   auth: { persistSession: true, autoRefreshToken: true }
+    console.log("Supabase Client:", supabaseClient);
 });
 
 let currentUserProfile = null;
