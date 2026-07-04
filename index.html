@@ -233,7 +233,7 @@ async function handleUserLogin(event) {
       console.log("Logged-in User Profile Details:", userData);
      // This will show you exactly what ID, NGO_ID, and UNION_ID the system is working with
         } else {
-        console.error("User fetch error:", userError);
+        console.error("User fetch error:", userData);
         }
       currentUserProfile = userProfile;
       
@@ -442,12 +442,12 @@ async function submitNewAvcbCase(event) {
         current_status: 'PENDING'
         
     };
-     console.log("Submitting payload to Supabase:", casePayload);  
+   
     try {
         const { error } = await supabaseClient
             .from('avcb_cases')
             .insert([casePayload]);
-            
+            console.log("Submitting payload to Supabase:", casePayload); 
         if (error) throw error;
 
         alert("🎉 Case successfully recorded!");
