@@ -4,7 +4,6 @@ const supabase_ANON_PUBLIC_KEY = "sb_publishable_qKZSUusEOjQLrQjkPGUjSw_d_WVUliX
 const supabaseClient = window.supabaseClient.createClient(supabase_PROJECT_URL, supabase_ANON_PUBLIC_KEY);
 let currentUserProfile = null;
 
-let currentUserProfile = null;
 // 2. THIS LISTENER ONLY SETS UP THE UI
 document.addEventListener('DOMContentLoaded', () => {
 console.log("DOM ready. Initializing listeners...");
