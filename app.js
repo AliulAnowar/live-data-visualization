@@ -71,29 +71,92 @@ function initializeDashboardLayout(profile) {
 }
 
 // 3. CASE ID & METRICS
-async function initializeSmartCaseID(profile) {
-    if (!profile) return;
+async function initializeSmartCaseID(loggedInUserEmail) {
     try {
-        const { data: unionCases, error: casesError } = await supabaseClient
-          .from('avcb_cases')
-          .select('*')
-          .eq('union_id', profile.union_id);
+    // 1. Fetch the user's explicit union configuration reference
+    const { data: userProfile, error: profileError } = await supabaseClient
+      .from('app_users')
+      .select('union_id')
+      .eq('email', loggedInUserEmail)
+      .maybeSingle();
 
-        if (casesError) throw casesError;
-
-        let nextCaseIdNumber = 1;
-        if (unionCases?.length > 0) {
-           const numericalIds = unionCases.map(item => parseInt(item.case_id, 10)).filter(num => !isNaN(num));
-           if (numericalIds.length > 0) nextCaseIdNumber = Math.max(...numericalIds) + 1;
-        }
-
-        const caseNumberField = document.getElementById('input-case-number');
-        if (caseNumberField) caseNumberField.value = nextCaseIdNumber.toString();
-        
-        document.getElementById('total-records-display').innerText = unionCases ? unionCases.length : 0;
-    } catch (err) {
-        console.error("Initialization error:", err.message);
+    if (profileError || !userProfile?.union_id) {
+      console.error("Access Map Fault: Account unlinked to a geographic region.");
+      return;
     }
+
+    const currentUnionId = userProfile.union_id;
+
+    // 2. Query ALL case records belonging strictly to this Union
+    const { data: unionCases, error: casesError } = await supabaseClient
+      .from('avcb_cases')
+      .select('*')
+      .eq('union_id', currentUnionId);
+
+    if (casesError) throw casesError;
+
+    // --- CASE MANIPULATION & SERIAL SEQUENCE CALCULATION ---
+    let nextCaseIdNumber = 1; // Default fallback if table array is empty
+    
+    if (unionCases && unionCases.length > 0) {
+      // Look through the array, parse values to true integers, and find the max
+      const numericalIds = unionCases
+        .map(item => parseInt(item.case_id, 10))
+        .filter(num => !isNaN(num));
+        
+      if (numericalIds.length > 0) {
+         nextCaseIdNumber = Math.max(...numericalIds) + 1; // Auto-increment by 1
+      }
+    }
+
+    // Set the auto-calculated increment value into your form field instantly!
+    const caseNumberField = document.getElementById('input-case-number');
+    if (caseNumberField) {
+      caseNumberField.value = nextCaseIdNumber.toString();
+      //caseNumberField.value = nextCaseIdNumber;
+    }
+
+    // --- METRIC PANEL RENDERING (REAL TIME INPUT) ---
+    const totalRecordsCount = unionCases ? unionCases.length : 0;
+    document.getElementById('total-records-display').innerText = totalRecordsCount;
+
+    if (totalRecordsCount > 0) {
+      // Calculate Demographics
+      const females = unionCases.filter(c => c.beneficiary_gender?.toUpperCase() === 'FEMALE').length;
+      const males = totalRecordsCount - females;
+      
+      document.getElementById('female-percentage-display').innerText = ((females / totalRecordsCount) * 100).toFixed(1) + '%';
+      document.getElementById('male-percentage-display').innerText = ((males / totalRecordsCount) * 100).toFixed(1) + '%';
+      
+      // Calculate Status Stats (Pending vs Resolved)
+      const pendingCount = unionCases.filter(c => c.current_status?.toUpperCase() === 'PENDING').length;
+      const resolvedCount = unionCases.filter(c => c.current_status?.toUpperCase() === 'RESOLVED').length;
+      
+      // Calculate Total Dispute Value Accumulation (Taka)
+      const totalTakaValuation = unionCases.reduce((sum, current) => sum + (parseFloat(current.dispute_amount) || 0), 0);
+
+      // Map values directly onto your separate individual metrics layout wrappers
+      if (document.getElementById('pending-count-display')) {
+         document.getElementById('pending-count-display').innerText = pendingCount;
+      }
+      if (document.getElementById('resolved-count-display')) {
+         document.getElementById('resolved-count-display').innerText = resolvedCount;
+      }
+      if (document.getElementById('total-taka-display')) {
+         document.getElementById('total-taka-display').innerText = totalTakaValuation.toLocaleString() + " BDT";
+      }
+    } else {
+      // Reset layout variables to clean zeros if the workspace database is empty
+      document.getElementById('female-percentage-display').innerText = '0%';
+      document.getElementById('male-percentage-display').innerText = '0%';
+      if (document.getElementById('pending-count-display')) document.getElementById('pending-count-display').innerText = '0';
+      if (document.getElementById('resolved-count-display')) document.getElementById('resolved-count-display').innerText = '0';
+      if (document.getElementById('total-taka-display')) document.getElementById('total-taka-display').innerText = '0 BDT';
+    }
+
+  } catch (err) {
+    console.error("Dashboard engine runtime crash:", err.message);
+  }
 }
 
 // 4. SUBMISSION PIPELINE
