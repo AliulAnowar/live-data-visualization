@@ -22,13 +22,10 @@ async function handleUserLogin(event) {
   const errorBox = document.getElementById('auth-error');
   const emailInput = document.getElementById('login-email').value.trim();
   
-  if (!emailInput) {
-    alert("Please enter a valid Court Officer Email address.");
-    return;
-  }
+  if (!emailInput) return alert("Please enter your email.");
 
   loginBtn.disabled = true;
-  loginBtn.innerText = "Verifying Credentials...";
+  loginBtn.innerText = "Verifying...";
   errorBox.classList.add('hidden');
 
   try {
@@ -38,13 +35,13 @@ async function handleUserLogin(event) {
        .eq('email', emailInput)
        .single();
 
-      if (userError) throw new Error("Email not found in our system.");
+      if (userError || !userData) throw new Error("Email not found.");
       
-      currentUserProfile = userData; // Store global profile
-      console.log("Login Successful. Profile:", currentUserProfile);
+      currentUserProfile = userData; 
       
+      // Initialize Dashboard ONLY after profile is loaded
       initializeDashboardLayout(currentUserProfile);
-      await initializeSmartCaseID(currentUserProfile.email);
+      await initializeSmartCaseID(currentUserProfile);
       await setTamperProofDate();
       await loadActiveCaseRegistry();
 
@@ -66,40 +63,18 @@ function initializeDashboardLayout(profile) {
     document.getElementById('loginGateway').classList.add('scale-110', 'opacity-0', 'pointer-events-none');
     setTimeout(() => { document.getElementById('loginGateway').classList.add('hidden'); }, 500);
     
-    const mainApp = document.getElementById('mainDashboardApp');
-    mainApp.classList.remove('hidden');
-    setTimeout(() => { mainApp.classList.remove('opacity-0'); }, 100);
-  // Change this part in your app.js
-try {
-    console.log("Attempting to initialize dashboard...");
-    initializeDashboard(currentUserProfile);
-    console.log("Dashboard initialized successfully!");
-} catch (error) {
-    // This will reveal the exact reason for the blank screen in your console
-    console.error("FAILED TO INITIALIZE DASHBOARD:", error);
+    document.getElementById('mainDashboardApp').classList.remove('hidden');
+    setTimeout(() => { document.getElementById('mainDashboardApp').classList.remove('opacity-0'); }, 100);
 }
-}
-// FIXED RULE 2: REWRITTEN TO GENERATE RELIABLE SYSTEM CLOCK DATES
-function setTamperProofDate() {
-    const dateInput = document.getElementById('input-filing-date');
-    if (dateInput) {
-        const localFallback = new Date();
-        const d = String(localFallback.getDate()).padStart(2, '0');
-        const m = String(localFallback.getMonth() + 1).padStart(2, '0');
-        const y = localFallback.getFullYear();
-        
-        dateInput.value = `${d}/${m}/${y}`;
-        dateInput.readOnly = true;
-        dateInput.style.pointerEvents = 'none';
-    }
-}
+
 // 3. CASE ID & METRICS
-async function initializeSmartCaseID(loggedInUserEmail) {
+async function initializeSmartCaseID(profile) {
+    if (!profile) return;
     try {
         const { data: unionCases, error: casesError } = await supabaseClient
           .from('avcb_cases')
           .select('*')
-          .eq('union_id', currentUserProfile.union_id);
+          .eq('union_id', profile.union_id);
 
         if (casesError) throw casesError;
 
@@ -121,31 +96,27 @@ async function initializeSmartCaseID(loggedInUserEmail) {
 // 4. SUBMISSION PIPELINE
 async function submitNewAvcbCase(event) {
     if (event) event.preventDefault();
-    
-    // Validation
+    if (!currentUserProfile) return alert("System Error: No user profile loaded.");
+
     const amount = parseFloat(document.getElementById('input-amount').value) || 0;
     const age = parseInt(document.getElementById('input-beneficiary-age').value) || 0;
     if (amount > 50000) return alert("Jurisdiction limit: 50,000 BDT");
-    if (age <= 0 || age >= 100) return alert("Invalid Age");
-
+    
     const submitBtn = document.getElementById('btn-submit-case');
     submitBtn.disabled = true;
 
     const casePayload = {
-        case_id: parseInt(document.getElementById('input-case-number').value, 10), 
-        
-        // Pass these as strings (they are UUIDs)
-        ngo_id: currentUserProfile?.ngo_id || 'UNKNOWN',         
-        union_id: currentUserProfile?.union_id,     
-        created_at:cleanIsoDate,
-        filing_date: cleanIsoDate,
+        case_id: parseInt(document.getElementById('input-case-number').value, 10),
+        ngo_id: currentUserProfile.ngo_id,
+        union_id: currentUserProfile.union_id,
         case_type: document.getElementById('select-case-type').value,
-        dispute_amount: parseFloat(document.getElementById('input-amount').value) || 0,
+        dispute_amount: amount,
         beneficiary_name: document.getElementById('input-beneficiary-name').value.trim(),
         beneficiary_gender: document.getElementById('select-gender').value,
-        beneficiary_age: parseInt(document.getElementById('input-beneficiary-age').value, 10) || null,
+        beneficiary_age: age,
+        filing_date: new Date().toISOString().split('T')[0],
+        created_at: new Date().toISOString(),
         current_status: 'PENDING'
-        
     };
 
     try {
@@ -153,7 +124,7 @@ async function submitNewAvcbCase(event) {
         if (error) throw error;
         alert("🎉 Case successfully recorded!");
         document.getElementById('case-entry-form').reset();
-        await initializeSmartCaseID(currentUserProfile.email);
+        await initializeSmartCaseID(currentUserProfile);
         await loadActiveCaseRegistry();
     } catch (err) {
         alert(`Error: ${err.message}`);
@@ -162,113 +133,39 @@ async function submitNewAvcbCase(event) {
     }
 }
 
-// 5. REGISTRY & LOGOUT
+// 5. REGISTRY & HELPERS
 async function loadActiveCaseRegistry() {
-  try {
-    const { data: cases, error } = await supabaseClient
+  if (!currentUserProfile) return;
+  const { data: cases, error } = await supabaseClient
       .from('avcb_cases')
       .select('*')
-      .eq('current_status', 'PENDING') 
-      .order('filing_date', { ascending: true });
+      .eq('union_id', currentUserProfile.union_id)
+      .eq('current_status', 'PENDING');
 
-    if (error) throw error;
-
-    const container = document.getElementById('unsolved-list-container');
-    if (!container) return;
-    container.innerHTML = '';
-
-    if (!cases || cases.length === 0) {
-        container.innerHTML = `<p class="text-xs text-slate-400 italic col-span-full">Excellent status: No pending unsolved files logged for this workspace matching your profile parameters.</p>`;
-        return;
-    }
-
-    cases.forEach(item => {
-      // Calculate chronological age criteria rules (90 Days statutory breach timeline constraint)
-      const filingDateTime = new Date(item.filing_date).getTime();
-      const threeMonthsInMs = 90 * 24 * 60 * 60 * 1000;
-      const isOverdue = (Date.now() - filingDateTime) > threeMonthsInMs;
-
-      // Reformat DB YYYY-MM-DD timestamp to clean display DD/MM/YYYY text
-      const [currYear, currMonth, currDay] = item.filing_date.split('-');
-      const displayFilingDate = `${currDay}/${currMonth}/${currYear}`;
-
-      container.innerHTML += `
-        <div class="case-card border p-4 rounded-2xl bg-white dark:bg-slate-900 transition shadow-sm ${isOverdue ? 'border-red-500 bg-red-50 dark:bg-red-950/20' : 'border-slate-200 dark:border-slate-800'}">
-          <div class="flex justify-between items-start">
-             <p class="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">📍 ID: <span class="case-search-id-string">${item.case_id}</span></p>
-             ${isOverdue ? '<span class="text-[9px] px-2 py-0.5 rounded-full bg-red-500 text-white font-bold animate-pulse">⚠️ OVERDUE 3M+</span>' : '<span class="text-[9px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 font-medium">PENDING</span>'}
-          </div>
-          <div class="mt-2 text-xs space-y-0.5 text-slate-500">
-             <p><strong>Beneficiary Name:</strong> ${item.beneficiary_name}</p>
-             <p><strong>Filing Date:</strong> ${displayFilingDate}</p>
-             <p><strong>Dispute Amount:</strong> ${item.dispute_amount} BDT</p>
-          </div>
-          <button onclick="resolveCase('${item.id}')" class="mt-3 w-full py-1.5 px-3 bg-slate-100 hover:bg-emerald-500 hover:text-white dark:bg-slate-800 text-xs font-semibold rounded-xl transition">
-             ✓ Mark Case File Solved
-          </button>
-        </div>
-      `;
-    });
-  } catch (err) {
-      console.error("Registry load aborted:", err.message);
-  }
+  if (error) return console.error(error);
+  
+  const container = document.getElementById('unsolved-list-container');
+  if (!container) return;
+  container.innerHTML = cases.map(item => `
+    <div class="case-card border p-4 rounded-2xl bg-white shadow-sm">
+      <p class="text-xs font-bold">📍 ID: ${item.case_id}</p>
+      <p class="text-xs"><strong>Beneficiary:</strong> ${item.beneficiary_name}</p>
+      <button onclick="resolveCase('${item.id}')" class="mt-2 w-full bg-slate-100 hover:bg-emerald-500 rounded-xl text-xs font-semibold py-1">✓ Mark Solved</button>
+    </div>
+  `).join('');
 }
 
-// ACTIVE ACTION INTERCEPTOR TO RE-MARK RECORD STATE
 async function resolveCase(guid) {
-  try {
-    const timestampTodayStr = new Date().toISOString().split('T')[0];
-    const { error } = await supabaseClient
-      .from('avcb_cases')
-      .update({ current_status: 'RESOLVED', resolution_date: timestampTodayStr })
-      .eq('id', guid);
-
-    if (error) throw error;
-    alert("🎉 Status updated successfully: Record tagged RESOLVED in repository registry matrices.");
-    
-    // Auto refresh active layouts
-    await updateDashboardMetrics();
+    await supabaseClient.from('avcb_cases').update({ current_status: 'RESOLVED' }).eq('id', guid);
     await loadActiveCaseRegistry();
-    await initializeSmartCaseID(currentUserProfile.email);
-
-  } catch (err) {
-      alert(`Operation fault: ${err.message}`);
-  }
 }
 
-// FUZZY INPUT PATTERN TEXT FILTER MATCH MATCH ENGINE
-function searchCaseRegistry() {
-  const filterValue = document.getElementById('search-case-input').value.toLowerCase().trim();
-  const caseCards = document.querySelectorAll('.case-card');
-
-  caseCards.forEach(card => {
-    // Selects the nested inner text field carrying the Case number string
-    const searchTargetSpanNode = card.querySelector('.case-search-id-string');
-    if (!searchTargetSpanNode) return;
-    
-    const idTextStringValue = searchTargetSpanNode.textContent.toLowerCase();
-    
-    if (idTextStringValue.includes(filterValue)) {
-      card.style.display = ""; 
-    } else {
-      card.style.display = "none";  
+function setTamperProofDate() {
+    const dateInput = document.getElementById('input-filing-date');
+    if (dateInput) {
+        dateInput.value = new Date().toLocaleDateString('en-GB');
+        dateInput.readOnly = true;
     }
-  });
 }
 
-function renderInteractiveChartGraphics(labelsArray, dataValuesArray) {
-    const canvasElement = document.getElementById('luxuryInteractiveChart');
-    if (!canvasElement) return;
-    new Chart(canvasElement.getContext('2d'), {
-        type: 'bar',
-        data: {
-            labels: labelsArray,
-            datasets: [{ data: dataValuesArray, backgroundColor: '#10b981', borderRadius: 12, barPercentage: 0.45 }]
-        },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-    });
-}
-
-function executeSystemLogout() {
-    location.reload();
-}
+function executeSystemLogout() { location.reload(); }
