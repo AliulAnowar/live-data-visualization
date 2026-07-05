@@ -19,9 +19,7 @@ const themeBtn = document.getElementById('themeToggle');
 
 // 1. LOGIN ROUTINE
 async function handleUserLogin(event) {
-  if (event) event.preventDefault();
-  const emailInput = document.getElementById('email').value; // Ensure this ID is correct
- 
+  if (event) event.preventDefault(); 
   const loginBtn = document.getElementById('btn-login');
   const errorBox = document.getElementById('auth-error');
   const emailInputElement = document.getElementById('login-email');
