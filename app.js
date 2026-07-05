@@ -23,40 +23,56 @@ async function handleUserLogin(event) {
   
   const loginBtn = document.getElementById('btn-login');
   const errorBox = document.getElementById('auth-error');
-  const emailInput = document.getElementById('login-email').value.trim();
+  const emailInputElement = document.getElementById('login-email');
   
-  if (!emailInput) return alert("Please enter your email.");
+  if (!emailInputElement) return;
+  const emailInput = emailInputElement.value.trim();
 
-  loginBtn.disabled = true;
-  loginBtn.innerText = "Verifying...";
-  errorBox.classList.add('hidden');
+  if (!emailInput) {
+    alert("Please enter a valid Court Officer Email address.");
+    return;
+  }
+
+  if (loginBtn) {
+      loginBtn.disabled = true;
+      loginBtn.innerText = "Verifying Credentials...";
+  }
+  if (errorBox) errorBox.classList.add('hidden');
 
   try {
-      const { data: userData, error: userError } = await supabaseClient
-       .from('app_users')
-       .select('*')
-       .eq('email', emailInput)
-       .single();
+      const { data: userData, error: userError } = await supabase
+     .from('app_users')
+     .select('*')
+     .eq('email', userEmail)
+     .single();
 
-      if (userError || !userData) throw new Error("Email not found.");
+      if (userData) {
+      console.log("Logged-in User Profile Details:", userData);
+     // This will show you exactly what ID, NGO_ID, and UNION_ID the system is working with
+        } else {
+        console.error("User fetch error:", userError);
+        }
+
+      currentUserProfile = userProfile;
       
-      currentUserProfile = userData; 
-      
-      // Initialize Dashboard ONLY after profile is loaded
+      // Fire configuration handshakes sequentially 
       initializeDashboardLayout(currentUserProfile);
-      await initializeSmartCaseID(currentUserProfile);
+      await initializeSmartCaseID(currentUserProfile.email);
       await setTamperProofDate();
       await loadActiveCaseRegistry();
 
     } catch (err) {
       console.error(err);
-      errorBox.innerText = err.message;
-      errorBox.classList.remove('hidden');
-      loginBtn.disabled = false;
-      loginBtn.innerText = "Verify Identity & Enter Workspace";
+      if (errorBox) {
+          errorBox.innerText = err.message;
+          errorBox.classList.remove('hidden');
+      }
+      if (loginBtn) {
+          loginBtn.disabled = false;
+          loginBtn.innerText = "Verify Identity & Enter Workspace";
+      }
   }
 }
-
 // 2. DASHBOARD INIT
 function initializeDashboardLayout(profile) {
     document.getElementById('displayUserName').textContent = profile.user_name;
