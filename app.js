@@ -1,5 +1,5 @@
 const SUPABASE_PROJECT_URL = "https://eghmzetfcimllmenhhei.supabase.co";
-const SUPABASE_ANON_PUBLIC_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVnaG16ZXRmY2ltbGxtZW5oaGVpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTA1MTAsImV4cCI6MjA5NzM2NjUxMH0.FLDImmDZ7pSlgcmoufnSENOhBPQAPQ20uZfYnHUQEq4";
+const SUPABASE_ANON_PUBLIC_KEY = "sb_publishable_xHtk1KS8h_c7Xp26RoMk0w_EbUifBgQ";
 
 const supabaseClient = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_PUBLIC_KEY, {
   auth: { persistSession: true, autoRefreshToken: true }
