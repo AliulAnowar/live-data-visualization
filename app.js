@@ -70,7 +70,20 @@ function initializeDashboardLayout(profile) {
     mainApp.classList.remove('hidden');
     setTimeout(() => { mainApp.classList.remove('opacity-0'); }, 100);
 }
-
+// FIXED RULE 2: REWRITTEN TO GENERATE RELIABLE SYSTEM CLOCK DATES
+function setTamperProofDate() {
+    const dateInput = document.getElementById('input-filing-date');
+    if (dateInput) {
+        const localFallback = new Date();
+        const d = String(localFallback.getDate()).padStart(2, '0');
+        const m = String(localFallback.getMonth() + 1).padStart(2, '0');
+        const y = localFallback.getFullYear();
+        
+        dateInput.value = `${d}/${m}/${y}`;
+        dateInput.readOnly = true;
+        dateInput.style.pointerEvents = 'none';
+    }
+}
 // 3. CASE ID & METRICS
 async function initializeSmartCaseID(loggedInUserEmail) {
     try {
