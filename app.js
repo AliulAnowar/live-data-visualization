@@ -1,7 +1,7 @@
 
-const supabaseClient_PROJECT_URL = "https://eghmzetfcimllmenhhei.supabaseClient.co";
-const supabaseClient_ANON_PUBLIC_KEY = "sb_publishable_qKZSUusEOjQLrQjkPGUjSw_d_WVUliX";
-const supabaseClientClient = window.supabaseClient.createClient(supabaseClient_PROJECT_URL, supabaseClient_ANON_PUBLIC_KEY);
+const supabase_PROJECT_URL = "https://eghmzetfcimllmenhhei.supabaseClient.co";
+const supabase_ANON_PUBLIC_KEY = "sb_publishable_qKZSUusEOjQLrQjkPGUjSw_d_WVUliX";
+const supabaseClient = window.supabaseClient.createClient(supabase_PROJECT_URL, supabase_ANON_PUBLIC_KEY);
 let currentUserProfile = null;
 
 let currentUserProfile = null;
@@ -22,8 +22,7 @@ const themeBtn = document.getElementById('themeToggle');
 async function handleUserLogin(event) {
   if (event) event.preventDefault();
   const emailInput = document.getElementById('email').value; // Ensure this ID is correct
-
-    console.log("Attempting database connection...");
+  console.log("Attempting database connection...");
   const loginBtn = document.getElementById('btn-login');
   const errorBox = document.getElementById('auth-error');
   const emailInputElement = document.getElementById('login-email');
@@ -43,7 +42,7 @@ async function handleUserLogin(event) {
   if (errorBox) errorBox.classList.add('hidden');
 
   try {
-      const { data: userData, error: userError } = await supabaseClient
+      const { data: userData, error: userError } = await supabaseClientClient
      .from('app_users')
      .select('*')
      .eq('email', userEmail)
@@ -93,7 +92,7 @@ function initializeDashboardLayout(profile) {
 async function initializeSmartCaseID(loggedInUserEmail) {
     try {
     // 1. Fetch the user's explicit union configuration reference
-    const { data: userProfile, error: profileError } = await supabaseClient
+    const { data: userProfile, error: profileError } = await supabaseClientClient
       .from('app_users')
       .select('union_id')
       .eq('email', loggedInUserEmail)
@@ -107,7 +106,7 @@ async function initializeSmartCaseID(loggedInUserEmail) {
     const currentUnionId = userProfile.union_id;
 
     // 2. Query ALL case records belonging strictly to this Union
-    const { data: unionCases, error: casesError } = await supabaseClient
+    const { data: unionCases, error: casesError } = await supabaseClientClient
       .from('avcb_cases')
       .select('*')
       .eq('union_id', currentUnionId);
@@ -205,7 +204,7 @@ async function submitNewAvcbCase(event) {
     };
 
     try {
-        const { error } = await supabaseClient.from('avcb_cases').insert([casePayload]);
+        const { error } = await supabaseClientClient.from('avcb_cases').insert([casePayload]);
         if (error) throw error;
         alert("🎉 Case successfully recorded!");
         document.getElementById('case-entry-form').reset();
@@ -221,7 +220,7 @@ async function submitNewAvcbCase(event) {
 // 5. REGISTRY & HELPERS
 async function loadActiveCaseRegistry() {
   if (!currentUserProfile) return;
-  const { data: cases, error } = await supabaseClient
+  const { data: cases, error } = await supabaseClientClient
       .from('avcb_cases')
       .select('*')
       .eq('union_id', currentUserProfile.union_id)
@@ -241,7 +240,7 @@ async function loadActiveCaseRegistry() {
 }
 
 async function resolveCase(guid) {
-    await supabaseClient.from('avcb_cases').update({ current_status: 'RESOLVED' }).eq('id', guid);
+    await supabaseClientClient.from('avcb_cases').update({ current_status: 'RESOLVED' }).eq('id', guid);
     await loadActiveCaseRegistry();
 }
 
