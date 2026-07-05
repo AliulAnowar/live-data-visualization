@@ -123,16 +123,20 @@ async function submitNewAvcbCase(event) {
     submitBtn.disabled = true;
 
     const casePayload = {
-        case_id: parseInt(document.getElementById('input-case-number').value, 10),
-        ngo_id: currentUserProfile.ngo_id,
-        union_id: currentUserProfile.union_id,
+        case_id: parseInt(document.getElementById('input-case-number').value, 10), 
+        
+        // Pass these as strings (they are UUIDs)
+        ngo_id: currentUserProfile?.ngo_id,         
+        union_id: currentUserProfile?.union_id,     
+        created_at:cleanIsoDate,
+        filing_date: cleanIsoDate,
         case_type: document.getElementById('select-case-type').value,
-        dispute_amount: amount,
+        dispute_amount: parseFloat(document.getElementById('input-amount').value) || 0,
         beneficiary_name: document.getElementById('input-beneficiary-name').value.trim(),
         beneficiary_gender: document.getElementById('select-gender').value,
-        beneficiary_age: age,
-        filing_date: new Date().toISOString().split('T')[0],
+        beneficiary_age: parseInt(document.getElementById('input-beneficiary-age').value, 10) || null,
         current_status: 'PENDING'
+        
     };
 
     try {
