@@ -1,8 +1,9 @@
 // --- app.js: Optimized M&E Enterprise Portal Logic ---
+const supabase = window.supabase.createClient(
+    "https://eghmzetfcimllmenhhei.supabase.co", 
+    "sb_publishable_qKZSUusEOjQLrQjkPGUjSw_d_WVUliX"
+);
 
-const SUPABASE_PROJECT_URL = "https://eghmzetfcimllmenhhei.supabase.co";
-const SUPABASE_ANON_PUBLIC_KEY = "sb_publishable_qKZSUusEOjQLrQjkPGUjSw_d_WVUliX";
-const supabaseClient = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_PUBLIC_KEY);
 let currentUserProfile = null;
 // 2. THIS LISTENER ONLY SETS UP THE UI
 document.addEventListener('DOMContentLoaded', () => {
@@ -90,7 +91,7 @@ function initializeDashboardLayout(profile) {
 async function initializeSmartCaseID(loggedInUserEmail) {
     try {
     // 1. Fetch the user's explicit union configuration reference
-    const { data: userProfile, error: profileError } = await supabaseClient
+    const { data: userProfile, error: profileError } = await supabase
       .from('app_users')
       .select('union_id')
       .eq('email', loggedInUserEmail)
@@ -104,7 +105,7 @@ async function initializeSmartCaseID(loggedInUserEmail) {
     const currentUnionId = userProfile.union_id;
 
     // 2. Query ALL case records belonging strictly to this Union
-    const { data: unionCases, error: casesError } = await supabaseClient
+    const { data: unionCases, error: casesError } = await supabase
       .from('avcb_cases')
       .select('*')
       .eq('union_id', currentUnionId);
@@ -202,7 +203,7 @@ async function submitNewAvcbCase(event) {
     };
 
     try {
-        const { error } = await supabaseClient.from('avcb_cases').insert([casePayload]);
+        const { error } = await supabase.from('avcb_cases').insert([casePayload]);
         if (error) throw error;
         alert("🎉 Case successfully recorded!");
         document.getElementById('case-entry-form').reset();
@@ -218,7 +219,7 @@ async function submitNewAvcbCase(event) {
 // 5. REGISTRY & HELPERS
 async function loadActiveCaseRegistry() {
   if (!currentUserProfile) return;
-  const { data: cases, error } = await supabaseClient
+  const { data: cases, error } = await supabase
       .from('avcb_cases')
       .select('*')
       .eq('union_id', currentUserProfile.union_id)
@@ -238,7 +239,7 @@ async function loadActiveCaseRegistry() {
 }
 
 async function resolveCase(guid) {
-    await supabaseClient.from('avcb_cases').update({ current_status: 'RESOLVED' }).eq('id', guid);
+    await supabase.from('avcb_cases').update({ current_status: 'RESOLVED' }).eq('id', guid);
     await loadActiveCaseRegistry();
 }
 
