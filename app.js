@@ -2,17 +2,20 @@
 
 const SUPABASE_PROJECT_URL = "https://eghmzetfcimllmenhhei.supabase.co";
 const SUPABASE_ANON_PUBLIC_KEY = "sb_publishable_qKZSUusEOjQLrQjkPGUjSw_d_WVUliX";
-
-const supabaseClient = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_PUBLIC_KEY, {
-  auth: { persistSession: true, autoRefreshToken: true }
-});
-
+const supabaseClient = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_PUBLIC_KEY);
 let currentUserProfile = null;
-
-// Theme Toggle
-document.getElementById('themeToggle').addEventListener('click', () => { 
-    document.documentElement.classList.toggle('dark');
+// 2. THIS LISTENER ONLY SETS UP THE UI
+document.addEventListener('DOMContentLoaded', () => {
+console.log("DOM ready. Initializing listeners...");
+// Setup event listeners for buttons that exist in the HTML
+const themeBtn = document.getElementById('themeToggle');
+    if (themeBtn) {
+        themeBtn.addEventListener('click', () => { 
+            document.documentElement.classList.toggle('dark');
+        });
+    }
 });
+
 
 // 1. LOGIN ROUTINE
 async function handleUserLogin(event) {
