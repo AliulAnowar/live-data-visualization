@@ -69,6 +69,15 @@ function initializeDashboardLayout(profile) {
     const mainApp = document.getElementById('mainDashboardApp');
     mainApp.classList.remove('hidden');
     setTimeout(() => { mainApp.classList.remove('opacity-0'); }, 100);
+  // Change this part in your app.js
+try {
+    console.log("Attempting to initialize dashboard...");
+    initializeDashboard(currentUserProfile);
+    console.log("Dashboard initialized successfully!");
+} catch (error) {
+    // This will reveal the exact reason for the blank screen in your console
+    console.error("FAILED TO INITIALIZE DASHBOARD:", error);
+}
 }
 // FIXED RULE 2: REWRITTEN TO GENERATE RELIABLE SYSTEM CLOCK DATES
 function setTamperProofDate() {
