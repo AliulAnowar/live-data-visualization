@@ -135,7 +135,7 @@ async function submitNewAvcbCase(event) {
         case_id: parseInt(document.getElementById('input-case-number').value, 10), 
         
         // Pass these as strings (they are UUIDs)
-        ngo_id: currentUserProfile?.ngo_id,         
+        ngo_id: currentUserProfile?.ngo_id || 'UNKNOWN',         
         union_id: currentUserProfile?.union_id,     
         created_at:cleanIsoDate,
         filing_date: cleanIsoDate,
