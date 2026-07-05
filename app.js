@@ -21,7 +21,10 @@ const themeBtn = document.getElementById('themeToggle');
 async function handleUserLogin(event) {
   if (event) event.preventDefault();
   const emailInput = document.getElementById('email').value; // Ensure this ID is correct
-  console.log("Attempting database connection...");
+ if (!emailInputElement) {
+        console.error("Login Error: Email input field not found on this page.");
+        return; 
+    }
   const loginBtn = document.getElementById('btn-login');
   const errorBox = document.getElementById('auth-error');
   const emailInputElement = document.getElementById('login-email');
