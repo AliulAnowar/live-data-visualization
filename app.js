@@ -1,9 +1,7 @@
-
-const supabase_PROJECT_URL = "https://eghmzetfcimllmenhhei.supabaseClient.co";
-const supabase_ANON_PUBLIC_KEY = "sb_publishable_qKZSUusEOjQLrQjkPGUjSw_d_WVUliX";
-const supabaseClient = window.supabaseClient.createClient(supabase_PROJECT_URL, supabase_ANON_PUBLIC_KEY);
+const SUPABASE_PROJECT_URL = "https://eghmzetfcimllmenhhei.supabase.co";
+const SUPABASE_ANON_PUBLIC_KEY = "sb_publishable_qKZSUusEOjQLrQjkPGUjSw_d_WVUliX";
+const supabaseClient = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_PUBLIC_KEY);
 let currentUserProfile = null;
-
 // 2. THIS LISTENER ONLY SETS UP THE UI
 document.addEventListener('DOMContentLoaded', () => {
 console.log("DOM ready. Initializing listeners...");
