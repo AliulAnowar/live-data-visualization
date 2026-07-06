@@ -39,7 +39,7 @@ async function handleUserLogin(event) {
        .single();
 
       if (userError || !userData) throw new Error("Email not found.");
-      
+      console.log("User Data:", userData);
       currentUserProfile = userData; 
       
       // Initialize Dashboard ONLY after profile is loaded
@@ -121,7 +121,7 @@ async function submitNewAvcbCase(event) {
         created_at: new Date().toISOString(),
         current_status: 'PENDING'
     };
-
+    console.table(casePayload)
     try {
         const { error } = await supabaseClient.from('avcb_cases').insert([casePayload]);
         if (error) throw error;
