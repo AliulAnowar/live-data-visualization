@@ -1,8 +1,8 @@
 // --- app.js: Optimized M&E Enterprise Portal Logic ---
-
-const SUPABASE_PROJECT_URL = "https://eghmzetfcimllmenhhei.supabase.co";
-const SUPABASE_ANON_PUBLIC_KEY = "sb_publishable_qKZSUusEOjQLrQjkPGUjSw_d_WVUliX";
-const supabaseClient = window.supabase.createClient(SUPABASE_PROJECT_URL, SUPABASE_ANON_PUBLIC_KEY);
+const { createClient } = supabase;
+const supabaseUrl = 'https://eghmzetfcimllmenhhei.supabase.co';
+const supabaseKey = 'sb_publishable_xHtk1KS8h_c7Xp26RoMk0w_EbUifBgQ';
+const supabaseClient = createClient(supabaseUrl, supabaseKey);
 let currentUserProfile = null;
 // 2. THIS LISTENER ONLY SETS UP THE UI
 document.addEventListener('DOMContentLoaded', () => {
