@@ -37,7 +37,7 @@ def run_data_automation_pipeline():
         
        # Example: detect dark mode from environment or frontend flag
 # For demo, let's assume an environment variable "APP_THEME" is set to "dark" or "light"
-theme = os.getenv("APP_THEME", "light")  # default to light if not set
+#theme = os.getenv("APP_THEME", "light")  # default to light if not set
 
 print("📊 Re-compiling chart graphic visualizations...")
 
