@@ -39,22 +39,29 @@ def run_data_automation_pipeline():
 # For demo, let's assume an environment variable "APP_THEME" is set to "dark" or "light"
         
         # Plot matching emerald dashboard color palette rows
-       print("📊 Re-compiling chart graphic visualizations...")
+        print("📊 Re-compiling chart graphic visualizations...")
         plt.style.use('dark_background')
         fig, ax = plt.subplots(figsize=(6, 4.5))
         
-        # Your custom dark theme
+        # Set background
         fig.patch.set_facecolor('#0b0f19')
         ax.set_facecolor('#111827')
         
-        # --- ADD THESE FOR VISIBILITY ---
-        # Explicitly set all text (ticks, labels, title) to a bright off-white
-        plt.rcParams.update({
-            'text.color': '#e2e8f0',
-            'axes.labelcolor': '#e2e8f0',
-            'xtick.color': '#e2e8f0',
-            'ytick.color': '#e2e8f0'
-        })
+        # --- APPLY COLORS DIRECTLY TO THE AXES ---
+        # Set label colors
+        ax.xaxis.label.set_color('#e2e8f0')
+        ax.yaxis.label.set_color('#e2e8f0')
+        
+        # Set tick colors
+        ax.tick_params(axis='x', colors='#e2e8f0')
+        ax.tick_params(axis='y', colors='#e2e8f0')
+        
+        # Set title color (if you have one)
+        ax.title.set_color('#e2e8f0')
+        
+        # Ensure the spine (the frame around the plot) is handled if needed
+        ax.spines['bottom'].set_color('#e2e8f0')
+        ax.spines['left'].set_color('#e2e8f0')
         # --------------------------------
         
         ax.bar(district_counts.index, district_counts.values, color='#10b981', width=0.5)
@@ -67,7 +74,7 @@ def run_data_automation_pipeline():
         ax.grid(axis='y', linestyle='--', alpha=0.1, color='#ffffff')
         
         plt.tight_layout()
-        plt.savefig('district_chart.png', facecolor=fig.get_facecolor(), edgecolor='none', dpi=150)
+        plt.savefig('district_chart.png', facecolor=fig.get_facecolor(), edgecolor='none', dpi=150, transparent=False)
         print("🎉 Success! 'district_chart.png' generated perfectly from live database records.")
         
     except Exception as error:
