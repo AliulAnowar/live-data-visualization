@@ -70,7 +70,7 @@ def run_data_automation_pipeline():
         for spine in ['top', 'right', 'left', 'bottom']:
             ax.spines[spine].set_visible(False)
             
-        ax.tick_params(colors='#94a3b8', labelsize=10)
+        
         ax.grid(axis='y', linestyle='--', alpha=0.1, color='#ffffff')
         
         plt.tight_layout()
