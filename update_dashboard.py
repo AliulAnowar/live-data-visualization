@@ -37,27 +37,14 @@ def run_data_automation_pipeline():
         
        # Example: detect dark mode from environment or frontend flag
 # For demo, let's assume an environment variable "APP_THEME" is set to "dark" or "light"
-print("📊 Re-compiling chart graphic visualizations...")
-
-plt.style.use('dark_background')
-fig, ax = plt.subplots(figsize=(6, 4.5))
-fig.patch.set_facecolor('#0b0f19')
-ax.set_facecolor('#111827')
-
-# Set font colors to light green
-font_color = '#546346'
-ax.tick_params(colors=font_color)
-ax.xaxis.label.set_color(font_color)
-ax.yaxis.label.set_color(font_color)
-ax.title.set_color(font_color)
-
-ax.set_title("Sample Chart")
-ax.set_xlabel("X-axis")
-ax.set_ylabel("Y-axis")
-
-plt.show()
         
         # Plot matching emerald dashboard color palette rows
+        print("📊 Re-compiling chart graphic visualizations...")
+        plt.style.use('seaborn-v0_8-whitegrid')
+        fig, ax = plt.subplots(figsize=(6, 4.5))
+        fig.patch.set_facecolor('#0b0f19')
+        ax.set_facecolor('#111827')
+        
         ax.bar(district_counts.index, district_counts.values, color='#10b981', width=0.5)
         
         # Strip borders
