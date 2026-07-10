@@ -49,17 +49,12 @@ def run_data_automation_pipeline():
         
         # --- APPLY COLORS DIRECTLY TO THE AXES ---
         # Set label colors
+        # --- APPLY COLORS DIRECTLY TO THE AXES ---
         ax.xaxis.label.set_color('#e2e8f0')
         ax.yaxis.label.set_color('#e2e8f0')
-        
-        # Set tick colors
         ax.tick_params(axis='x', colors='#e2e8f0')
         ax.tick_params(axis='y', colors='#e2e8f0')
-        
-        # Set title color (if you have one)
         ax.title.set_color('#e2e8f0')
-        
-        # Ensure the spine (the frame around the plot) is handled if needed
         ax.spines['bottom'].set_color('#e2e8f0')
         ax.spines['left'].set_color('#e2e8f0')
         # --------------------------------
@@ -69,10 +64,11 @@ def run_data_automation_pipeline():
         # Strip borders
         for spine in ['top', 'right', 'left', 'bottom']:
             ax.spines[spine].set_visible(False)
-            
         
-        ax.grid(axis='y', linestyle='--', alpha=0.1, color='#ffffff')
+        # If you want to keep the label size, just use this instead:
+        ax.tick_params(labelsize=10) 
         
+        ax.grid(axis='y', linestyle='--', alpha=0.1, color='#ffffff')        
         plt.tight_layout()
         plt.savefig('district_chart.png', facecolor=fig.get_facecolor(), edgecolor='none', dpi=150, transparent=False)
         print("🎉 Success! 'district_chart.png' generated perfectly from live database records.")
