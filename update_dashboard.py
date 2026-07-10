@@ -39,11 +39,23 @@ def run_data_automation_pipeline():
 # For demo, let's assume an environment variable "APP_THEME" is set to "dark" or "light"
         
         # Plot matching emerald dashboard color palette rows
-        print("📊 Re-compiling chart graphic visualizations...")
-        plt.style.use('seaborn-v0_8-whitegrid')
+       print("📊 Re-compiling chart graphic visualizations...")
+        plt.style.use('dark_background')
         fig, ax = plt.subplots(figsize=(6, 4.5))
+        
+        # Your custom dark theme
         fig.patch.set_facecolor('#0b0f19')
         ax.set_facecolor('#111827')
+        
+        # --- ADD THESE FOR VISIBILITY ---
+        # Explicitly set all text (ticks, labels, title) to a bright off-white
+        plt.rcParams.update({
+            'text.color': '#e2e8f0',
+            'axes.labelcolor': '#e2e8f0',
+            'xtick.color': '#e2e8f0',
+            'ytick.color': '#e2e8f0'
+        })
+        # --------------------------------
         
         ax.bar(district_counts.index, district_counts.values, color='#10b981', width=0.5)
         
