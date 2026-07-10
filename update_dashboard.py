@@ -20,7 +20,7 @@ def run_data_automation_pipeline():
         "Authorization": f"Bearer {SUPABASE_ANON_PUBLIC_KEY}"
     }
     
-    target_endpoint = f"{SUPABASE_PROJECT_URL}/rest/v1/ngo_project_records?select=district"
+ target_endpoint = f"{SUPABASE_PROJECT_URL}/rest/v1/avcb_cases_with_names?select=district"
     
     try:
         response = requests.get(target_endpoint, headers=headers)
