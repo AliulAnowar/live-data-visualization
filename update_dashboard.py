@@ -12,22 +12,28 @@ def run_data_automation_pipeline():
         district_counts = df['District'].value_counts()
         
         print("📊 Re-compiling chart graphic visualizations...")
-        plt.style.use('dark_background')
+        # 1. Change style to a light/white theme
+        plt.style.use('default') 
         fig, ax = plt.subplots(figsize=(6, 4.5))
         
-        # Set background colors
-        fig.patch.set_facecolor('#0b0f19')
-        ax.set_facecolor('#111827')
+        # 2. Set backgrounds to light/white
+        fig.patch.set_facecolor('#ffffff') # Pure white outer
+        ax.set_facecolor('#f8fafc')       # Very light grey inner
         
-        # --- APPLY COLORS ---
-        ax.xaxis.label.set_color('#e2e8f0')
-        ax.yaxis.label.set_color('#e2e8f0')
-        ax.tick_params(axis='x', colors='#e2e8f0')
-        ax.tick_params(axis='y', colors='#e2e8f0')
-        ax.title.set_color('#e2e8f0')
-        ax.spines['bottom'].set_color('#e2e8f0')
-        ax.spines['left'].set_color('#e2e8f0')
+        # 3. Use DARK text and labels for contrast
+        text_color = '#1e293b' # A dark slate color
+        ax.xaxis.label.set_color(text_color)
+        ax.yaxis.label.set_color(text_color)
+        ax.tick_params(axis='x', colors=text_color)
+        ax.tick_params(axis='y', colors=text_color)
+        ax.title.set_color(text_color)
         
+        # Spines and grid
+        ax.spines['bottom'].set_color(text_color)
+        ax.spines['left'].set_color(text_color)
+        ax.grid(axis='y', linestyle='--', alpha=0.3, color='#94a3b8')
+        
+        # ... (rest of your bar chart code)        
         # Create bar chart
         ax.bar(district_counts.index, district_counts.values, color='#10b981', width=0.5)
         
