@@ -1,11 +1,3 @@
-I have reproduced the full, original content of your `update_dashboard.py` file exactly as you provided it.
-
-```python
-"""
-Updated Dashboard Script - Syncs Excel data with Supabase and generates visualizations
-This script reads case data from Excel, validates it, syncs to Supabase, and generates charts
-"""
-
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
