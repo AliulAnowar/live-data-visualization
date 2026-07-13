@@ -201,15 +201,3 @@ try:
         
 except Exception as e:
     print(f"⚠️  Supabase sync not configured: {str(e)}")
-
-# ============================================================================
-# STEP 6: Summary
-# ============================================================================
-print("\n" + "=" * 60)
-print("✅ Dashboard Update Pipeline Completed Successfully!")
-print("=" * 60)
-print(f"\n📊 Generated Files:")
-print(f"   ✓ district_chart.png")
-print(f"   ✓ case_analytics.png")
-print(f"\n📈 Last Updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-print("\n" + "=" * 60)
