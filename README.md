@@ -12,11 +12,12 @@ The architecture operates entirely on open-source automation, ensuring that fiel
     Programmatic Compilation (Python): Python's pandas and openpyxl data engines parse the file, validate column schemas, and dynamically recalculate descriptive distribution metrics.
 
     Automated Visualization Deployment: The script draws a pristine statistical frequency chart via matplotlib and automatically overwrites the web asset, updating the public dashboard in real time.
-
+![District Distribution Chart](district_chart.png)
 🔍 Foundational Statistical Findings
 
 Below is the live data visualization tracking our regional distributions across the target sample size, automatically compiled by our Python and GitHub Actions cloud pipeline:
 📈 Verified Statistical Insights (Live Monitoring Output)
+
 
     Geographic Sample Distribution: The tracking dataset automatically parses real-time metrics directly across active field household records. Rangpur and Gaibandha lead as our primary implementation hubs with 5 records each, followed by Dinajpur (4) and Kurigram (4). Total live tracked sample size is 18 households.
 
