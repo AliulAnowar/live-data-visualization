@@ -2,41 +2,29 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 
-try:
-    print("🔄 Initializing cloud data sync...")
-    
-    # Check if file exists in the directory
-    file_name = "NGO_Project_MNE_Dataset_2000.xlsx"
-    if not os.path.exists(file_name):
-        raise FileNotFoundError(f"Could not locate {file_name} in root folder.")
-        
-    # Read Excel specifying openpyxl explicitly for the engine
-    df = pd.read_excel(file_name, engine='openpyxl')
-    print(f"📊 Dataset successfully parsed. Found {len(df)} total rows.")
-    
-    # Calculate the updated frequencies using the exact case-sensitive label
-    district_counts = df['District'].value_counts()
-    
-    # Generate the pristine visualization
-    plt.figure(figsize=(10, 6))
-    
-    # Highlight highest frequency with a distinct color profile
-    colors = ['#2196f3' if x < district_counts.max() else '#0b7dda' for x in district_counts.values]
-    
-    district_counts.plot(kind='bar', color=colors, edgecolor='black', zorder=3)
-    
-    plt.title("Project Implementation District (Automated Monitoring)", fontsize=14, fontweight='bold', pad=15)
-    plt.ylabel("Frequency", fontsize=12, fontweight='bold')
-    plt.xlabel("Project Implementation District", fontsize=12, fontweight='bold')
-    plt.xticks(rotation=0)
-    plt.grid(axis='y', linestyle='--', alpha=0.7, zorder=0)
-    
-    # Save chart asset
-    plt.savefig("district_chart.png", dpi=300, bbox_inches='tight')
-    plt.close()
-    print("🎯 Success: 'district_chart.png' generated and updated perfectly.")
+# 1. Load Data
+df = pd.read_excel('NGO_Project_MNE_Dataset_2000.xlsx')
 
-except Exception as e:
-    print(f"❌ Critical Pipeline Failure: {str(e)}")
-    # Force exit code 0 to keep track of the workflow environment log
-    exit(1)
+# 2. Prepare Data (Count all rows, including any potential blanks just in case)
+district_counts = df['District'].value_counts(dropna=False)
+
+# 3. Setup Plot
+plt.style.use('default')
+fig, ax = plt.subplots(figsize=(8, 5))
+fig.patch.set_facecolor('#ffffff')
+ax.set_facecolor('#f8fafc')
+
+# 4. Create Chart
+district_counts.plot(kind='bar', ax=ax, color=['#10b981', '#3b82f6', '#f59e0b', '#ef4444'])
+
+# 5. Styling & Labels
+ax.set_title('Regional Distribution Metrics', fontsize=14, fontweight='bold', color='#1e293b')
+ax.set_xlabel('District', fontsize=12, color='#1e293b')
+ax.set_ylabel('Household Record Volumes', fontsize=12, color='#1e293b')
+ax.tick_params(axis='x', rotation=0, colors='#1e293b')
+ax.tick_params(axis='y', colors='#1e293b')
+ax.grid(axis='y', linestyle='--', alpha=0.5, color='#94a3b8')
+
+# 6. Save
+plt.tight_layout()
+plt.savefig('district_chart.png', dpi=150)
