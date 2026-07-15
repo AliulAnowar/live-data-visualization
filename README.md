@@ -13,7 +13,7 @@ The architecture operates entirely on open-source automation, ensuring that fiel
 
     Automated Visualization Deployment: The script draws a pristine statistical frequency chart via matplotlib and automatically overwrites the web asset, updating the public dashboard in real time.
 ### 1. District Distribution
-![District Chart](district_chart_v2.png)
+![District Chart](district_chart_v2.png?v=1721064479)
 
 ### 2. Case Analytics
 ![Case Analytics](case_analytics.png)
