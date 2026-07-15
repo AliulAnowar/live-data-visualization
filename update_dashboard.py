@@ -1,46 +1,29 @@
 """
-Updated Dashboard Script - Syncs Excel data with Supabase and generates visualizations
-This script reads case data from Excel, validates it, syncs to Supabase, and generates charts
+AVCB Dashboard Update Script
+Generates high-quality visualizations from NGO Case Data.
 """
 
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
-from datetime import datetime
 from dotenv import load_dotenv
 
-# Load environment variables
+# Load environment variables if needed
 load_dotenv()
 
 # Configuration
-SUPABASE_URL = os.getenv('SUPABASE_URL')
-SUPABASE_KEY = os.getenv('SUPABASE_KEY')
 EXCEL_FILE = 'NGO_Project_MNE_Dataset_2000.xlsx'
 
 print("=" * 60)
-print("🚀 AVCB Dashboard Update Pipeline Started")
+print("🚀 Starting Dashboard Generation Pipeline")
 print("=" * 60)
 
-# ============================================================================
-# STEP 1: Load and Validate Excel Data
-# ============================================================================
-print("\n📂 STEP 1: Loading Excel Data")
-
-try:
-    if not os.path.exists(EXCEL_FILE):
-        raise FileNotFoundError(f"Data file not found: {EXCEL_FILE}")
-    
-    df = pd.read_excel(EXCEL_FILE, sheet_name='AVCB Cases')
-    print(f"✅ Loaded {len(df)} records from Excel")
-    print(f"   Columns: {list(df.columns)}")
-    
-except Exception as e:
-    print(f"❌ Error loading Excel: {str(e)}")
+# --- Load Data ---
+if not os.path.exists(EXCEL_FILE):
+    print(f"❌ Error: {EXCEL_FILE} not found.")
     exit(1)
 
-# ============================================================================
-# STEP 2: Data Validation
-# ============================================================================
+df = pd.read_excel(EXCEL_FILE, sheet_name='AVCB Cases')
 print("\n🔍 STEP 2: Validating Data")
 
 required_columns = [
@@ -85,147 +68,80 @@ if validation_errors:
 else:
     print("✅ All data validation passed")
 
-# Clean data
-df = df.dropna(subset=['beneficiary_name', 'case_type', 'dispute_amount'])
+print(f"✅ Data loaded: {len(df)} records.")
 
-# ============================================================================
-# STEP 3: Generate Analytics & Visualizations
-# ============================================================================
-print("\n📊 STEP 3: Generating Visualizations")
+# --- CHART 1: Regional Distribution (District) ---
+print("📊 Generating: District Distribution")
+district_counts = df['district_name'].value_counts(dropna=False)
 
-try:
-    # --- Chart 1: District Distribution ---
-    district_counts = df['district_name'].value_counts(dropna=False)
-    
-    plt.style.use('default')
-    fig, ax = plt.subplots(figsize=(12, 6))
-    fig.patch.set_facecolor('#ffffff')
-    ax.set_facecolor('#f8fafc')
-    
-    colors = plt.cm.tab20(range(len(district_counts)))
-    district_counts.plot(kind='bar', ax=ax, color=colors)
-    
-    ax.set_title('Regional Distribution Metrics - AVCB Cases by District', 
-                 fontsize=14, fontweight='bold', color='#1e293b')
-    ax.set_xlabel('District', fontsize=12, color='#1e293b')
-    ax.set_ylabel('Active Case Volume', fontsize=12, color='#1e293b')
-    ax.tick_params(axis='x', rotation=45, colors='#1e293b')
-    ax.tick_params(axis='y', colors='#1e293b')
-    ax.grid(axis='y', linestyle='--', alpha=0.5, color='#94a3b8')
-    
-    plt.tight_layout()
-    plt.savefig('district_chart.png', dpi=150)
-    print("✅ District chart generated: district_chart.png")
-    plt.close()
-    
-    # --- Chart 2: Case Status Distribution ---
-    status_counts = df['current_status'].value_counts()
-    
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
-    fig.patch.set_facecolor('#ffffff')
-    
-    # Pie chart
-    colors_status = ['#10b981', '#ef4444']  # green for RESOLVED, red for PENDING
-    ax1.pie(status_counts.values, labels=status_counts.index, autopct='%1.1f%%',
-            colors=colors_status, startangle=90, textprops={'fontsize': 11, 'weight': 'bold'})
-    ax1.set_title('Case Resolution Status', fontsize=12, fontweight='bold', color='#1e293b')
-    
-    # Bar chart - Case types
-    case_type_counts = df['case_type'].value_counts()
-    case_type_counts.plot(kind='bar', ax=ax2, color=['#3b82f6', '#f59e0b'])
-    ax2.set_title('Case Types Distribution', fontsize=12, fontweight='bold', color='#1e293b')
-    ax2.set_xlabel('Case Type', fontsize=11, color='#1e293b')
-    ax2.set_ylabel('Count', fontsize=11, color='#1e293b')
-    ax2.tick_params(axis='x', rotation=0)
-    ax2.grid(axis='y', linestyle='--', alpha=0.5)
-    
-    plt.tight_layout()
-    plt.savefig('case_analytics.png', dpi=150)
-    print("✅ Case analytics chart generated: case_analytics.png")
-    plt.close()
-    
-except Exception as e:
-    print(f"❌ Error generating charts: {str(e)}")
-    exit(1)
-
-# ============================================================================
-# STEP 4: Calculate Statistics
-# ============================================================================
-print("\n📈 STEP 4: Calculating Statistics")
-
-stats = {
-    'total_cases': len(df),
-    'pending_cases': len(df[df['current_status'] == 'PENDING']),
-    'resolved_cases': len(df[df['current_status'] == 'RESOLVED']),
-    'resolution_rate': f"{(len(df[df['current_status'] == 'RESOLVED']) / len(df) * 100):.1f}%",
-    'avg_dispute_amount': f"BDT {df['dispute_amount'].mean():,.2f}",
-    'max_dispute_amount': f"BDT {df['dispute_amount'].max():,.2f}",
-    'civil_cases': len(df[df['case_type'] == 'CIVIL']),
-    'criminal_cases': len(df[df['case_type'] == 'CRIMINAL']),
-    'avg_beneficiary_age': f"{df['beneficiary_age'].mean():.1f} years",
-    'male_count': len(df[df['beneficiary_gender'] == 'Male']),
-    'female_count': len(df[df['beneficiary_gender'] == 'Female']),
-}
-
-print("\n📊 Dashboard Statistics:")
-print(f"   Total Cases: {stats['total_cases']}")
-print(f"   Pending: {stats['pending_cases']} | Resolved: {stats['resolved_cases']}")
-print(f"   Resolution Rate: {stats['resolution_rate']}")
-print(f"   Avg Dispute Amount: {stats['avg_dispute_amount']}")
-print(f"   Civil: {stats['civil_cases']} | Criminal: {stats['criminal_cases']}")
-print(f"   Gender Distribution: {stats['male_count']} Male, {stats['female_count']} Female")
-
-# ============================================================================
-# STEP 5: Prepare Data for Supabase Sync (Optional)
-# ============================================================================
-print("\n🔄 STEP 5: Preparing Data for Supabase")
-
- aliulanowar-studious-engine
-try:
-    # Only sync if Supabase credentials are available
-    if SUPABASE_URL and SUPABASE_KEY:
-        from supabase import create_client, Client
-        
-        supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
-        print("✅ Connected to Supabase")
-        
-        # Prepare records for insertion
-        # Note: UUIDs and foreign keys should be handled based on your system
-        records_to_sync = []
-        
-        print(f"   Ready to sync {len(df)} records to avcb_cases table")
-        print("   ⚠️  Note: Manual Supabase credentials and UUID mapping required")
-        
-    else:
-        print("⚠️  Supabase credentials not found in environment variables")
-        print("   To enable Supabase sync, set: SUPABASE_URL and SUPABASE_KEY")
-        
-except Exception as e:
-    print(f"⚠️  Supabase sync not configured: {str(e)}")
-# 1. Load Data
-df = pd.read_excel('NGO_Project_MNE_Dataset_2000.xlsx')
-
-# 2. Prepare Data (Count all rows, including any potential blanks just in case)
-district_counts = df['District'].value_counts(dropna=False)
-
-# 3. Setup Plot
 plt.style.use('default')
-fig, ax = plt.subplots(figsize=(8, 5))
+fig, ax = plt.subplots(figsize=(12, 6))
 fig.patch.set_facecolor('#ffffff')
 ax.set_facecolor('#f8fafc')
 
-# 4. Create Chart
-district_counts.plot(kind='bar', ax=ax, color=['#10b981', '#3b82f6', '#f59e0b', '#ef4444'])
+colors = plt.cm.tab20(range(len(district_counts)))
+district_counts.plot(kind='bar', ax=ax, color=colors)
 
-# 5. Styling & Labels
-ax.set_title('Regional Distribution Metrics', fontsize=14, fontweight='bold', color='#1e293b')
+ax.set_title('Regional Distribution Metrics - AVCB Cases by District', fontsize=14, fontweight='bold', color='#1e293b')
 ax.set_xlabel('District', fontsize=12, color='#1e293b')
-ax.set_ylabel('Household Record Volumes', fontsize=12, color='#1e293b')
-ax.tick_params(axis='x', rotation=0, colors='#1e293b')
+ax.set_ylabel('Active Case Volume', fontsize=12, color='#1e293b')
+ax.tick_params(axis='x', rotation=45, colors='#1e293b')
 ax.tick_params(axis='y', colors='#1e293b')
 ax.grid(axis='y', linestyle='--', alpha=0.5, color='#94a3b8')
 
-# 6. Save
 plt.tight_layout()
-plt.savefig('district_chart.png', dpi=150)
- main
+plt.savefig('district_chart_v2.png', dpi=150)
+print("✅ Saved: district_chart_v2.png")
+plt.close()
+
+# --- CHART 2: Case Analytics (Status & Type) ---
+print("📊 Generating: Case Analytics")
+status_counts = df['current_status'].value_counts()
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
+fig.patch.set_facecolor('#ffffff')
+
+# Pie chart: Status
+colors_status = ['#10b981', '#ef4444']
+ax1.pie(status_counts.values, labels=status_counts.index, autopct='%1.1f%%',
+        colors=colors_status, startangle=90, textprops={'fontsize': 11, 'weight': 'bold'})
+ax1.set_title('Case Resolution Status', fontsize=12, fontweight='bold', color='#1e293b')
+
+# Bar chart: Case Types
+case_type_counts = df['case_type'].value_counts()
+case_type_counts.plot(kind='bar', ax=ax2, color=['#3b82f6', '#f59e0b'])
+ax2.set_title('Case Types Distribution', fontsize=12, fontweight='bold', color='#1e293b')
+ax2.set_xlabel('Case Type', fontsize=11, color='#1e293b')
+ax2.set_ylabel('Count', fontsize=11, color='#1e293b')
+ax2.tick_params(axis='x', rotation=0, colors='#1e293b')
+ax2.grid(axis='y', linestyle='--', alpha=0.5, color='#94a3b8')
+
+plt.tight_layout()
+plt.savefig('case_analytics.png', dpi=150)
+print("✅ Saved: case_analytics.png")
+plt.close()
+
+# --- CHART 3: Top 10 Union Distribution ---
+print("📊 Generating: Union Distribution")
+union_counts = df['union_name'].value_counts().head(10)
+
+fig, ax = plt.subplots(figsize=(12, 6))
+fig.patch.set_facecolor('#ffffff')
+ax.set_facecolor('#f8fafc')
+
+union_counts.plot(kind='bar', ax=ax, color='#6366f1')
+
+ax.set_title('Top 10 Union Distribution - Case Volume', fontsize=14, fontweight='bold', color='#1e293b')
+ax.set_xlabel('Union Name', fontsize=12, color='#1e293b')
+ax.set_ylabel('Number of Cases', fontsize=12, color='#1e293b')
+ax.tick_params(axis='x', rotation=45, colors='#1e293b')
+ax.grid(axis='y', linestyle='--', alpha=0.5, color='#94a3b8')
+
+plt.tight_layout()
+plt.savefig('union_distribution_chart.png', dpi=150)
+print("✅ Saved: union_distribution_chart.png")
+plt.close()
+
+print("=" * 60)
+print("🚀 Dashboard Generation Complete!")
+print("=" * 60)
