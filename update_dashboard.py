@@ -7,6 +7,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 from dotenv import load_dotenv
+import re
+import time
 
 # Load environment variables if needed
 load_dotenv()
@@ -141,6 +143,25 @@ plt.tight_layout()
 plt.savefig('union_distribution_chart.png', dpi=150)
 print("✅ Saved: union_distribution_chart.png")
 plt.close()
+# --- STEP 3: Cache-Busting (Update README.md) ---
+print("📝 STEP 4: Updating README.md with timestamps")
+
+timestamp = int(time.time())
+
+with open("README.md", "r") as f:
+    content = f.read()
+
+# Update the image links in README.md with the current timestamp
+content = re.sub(r'\(district_chart_v2\.png(\?v=\d+)?\)', f'(district_chart_v2.png?v={timestamp})', content)
+content = re.sub(r'\(case_analytics\.png(\?v=\d+)?\)', f'(case_analytics.png?v={timestamp})', content)
+content = re.sub(r'\(union_distribution_chart\.png(\?v=\d+)?\)', f'(union_distribution_chart.png?v={timestamp})', content)
+
+with open("README.md", "w") as f:
+    f.write(content)
+
+print("✅ README.md updated successfully.")
+print("=" * 60)
+print("🚀 Pipeline Finished Successfully")
 
 print("=" * 60)
 print("🚀 Dashboard Generation Complete!")
