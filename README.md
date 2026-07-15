@@ -12,7 +12,14 @@ The architecture operates entirely on open-source automation, ensuring that fiel
     Programmatic Compilation (Python): Python's pandas and openpyxl data engines parse the file, validate column schemas, and dynamically recalculate descriptive distribution metrics.
 
     Automated Visualization Deployment: The script draws a pristine statistical frequency chart via matplotlib and automatically overwrites the web asset, updating the public dashboard in real time.
-![District Distribution Chart](district_chart_v2.png)
+### 1. District Distribution
+![District Chart](district_chart_v2.png)
+
+### 2. Case Analytics
+![Case Analytics](case_analytics.png)
+
+### 3. Top 10 Union Distribution
+![Union Distribution](union_distribution_chart.png)
 🔍 Foundational Statistical Findings
 
 Below is the live data visualization tracking our regional distributions across the target sample size, automatically compiled by our Python and GitHub Actions cloud pipeline:
