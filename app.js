@@ -30,14 +30,19 @@ async function handleUserLogin(event) {
   loginBtn.disabled = true;
   loginBtn.innerText = "Verifying...";
   errorBox.classList.add('hidden');
-
-  try {
-      const { data: userData, error: userError } = await supabaseClient
-       .from('app_users')
-       .select('*')
-       .eq('email', emailInput)
-       .single();
-
+  try
+  {
+    const { data: userData, error: userError } = await supabaseClient
+     .from('app_users')
+     .select(`
+      *,
+      unions (name),
+      upazilas (name),
+      districts (name),
+      ngos (name)
+     `)
+     .eq('email', emailInput)
+     .single();
       if (userError || !userData) throw new Error("Email not found.");
       console.log("User Data:", userData);
       currentUserProfile = userData; 
