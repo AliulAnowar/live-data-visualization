@@ -30,22 +30,19 @@ async function handleUserLogin(event) {
   loginBtn.disabled = true;
   loginBtn.innerText = "Verifying...";
   errorBox.classList.add('hidden');
-  try
-  {
-    const { data: userData, error: userError } = await supabaseClient
-     .from('app_users')
-     .select(`
-      *,
-      unions (name),
-      upazilas (name),
-      districts (name),
-      ngos (name)
-     `)
-     .eq('email', emailInput)
-     .single();
-      if (userError || !userData) throw new Error("Email not found.");
-      console.log("User Data:", userData);
-      currentUserProfile = userData; 
+// 3. Now you can use it
+async function fetchData() {
+  const { data, error } = await supabase
+    .from('app_users')
+    .select('*');
+
+  if (error) {
+    console.error("Full error object:", error);
+  } else {
+    console.log(data);
+  }
+}
+currentUserProfile = userData; 
       
       // Initialize Dashboard ONLY after profile is loaded
       initializeDashboardLayout(currentUserProfile);
@@ -177,4 +174,7 @@ function setTamperProofDate() {
 }
 
 function executeSystemLogout() { location.reload(); }
+document.addEventListener('DOMContentLoaded', () => {
+  fetchData();
+});
 
