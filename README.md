@@ -28,13 +28,13 @@ Below is the live data visualization tracking our regional distributions across 
 
     Geographic Sample Distribution: The tracking dataset automatically parses real-time metrics directly across active field household records. Rangpur and Gaibandha lead as our primary implementation hubs with 5 records each, followed by Dinajpur (4) and Kurigram (4). Total live tracked sample size is 18 households.
 
-    Target Demographics: In alignment with institutional micro-finance and maternal development targets, the baseline gender distribution was programmatically optimized, capturing 9 Female beneficiaries (50%) and 9 Male beneficiaries (50%).
+    Target Demographics: In alignment with institutional M&E and maternal development targets, the baseline gender distribution was programmatically optimized, capturing 9 Female beneficiaries (50%) and 9 Male beneficiaries (50%).
 
     Core Interventions: Programmatic resource allocation was distributed equally across core developmental pillars tracked live within the main tracking database architecture.
 
     Hypothesis Testing (Paired Samples T-Test Results):
 
-        Null Hypothesis (H0​): There is no significant statistical difference between pre-intervention and post-intervention household incomes.
+  
 
         Analysis: The tracking dataset reveals a substantial positive shift from baseline to endline tracking bounds.
 
