@@ -13,16 +13,16 @@ The architecture operates entirely on open-source automation, ensuring that fiel
 
     Automated Visualization Deployment: The script draws a pristine statistical frequency chart via matplotlib and automatically overwrites the web asset, updating the public dashboard in real time.
 ### 1. District Distribution
-![District Chart](district_chart_v2.png?v=1784569967)
+![District Chart](district_chart_v2.png?v=1784570320)
 
 ### 2. Case Analytics
-![Case Analytics](case_analytics.png?v=1784569967)
+![Case Analytics](case_analytics.png?v=1784570320)
 
 ### 3. Top 10 Union Distribution
-![Union Distribution](union_distribution_chart.png?v=1784569967)
+![Union Distribution](union_distribution_chart.png?v=1784570320)
 
 ### 3. Male & Femle Analytics
-![Union Distribution](male-female.jpg?v=1784569967)
+![Union Distribution](male-female.jpg?v=1784570320)
 🔍 Foundational Statistical Findings
 
 Below is the live data visualization tracking our regional distributions across the target sample size, automatically compiled by our Python and GitHub Actions cloud pipeline:
