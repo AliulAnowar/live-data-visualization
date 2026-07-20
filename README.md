@@ -21,7 +21,7 @@ The architecture operates entirely on open-source automation, ensuring that fiel
 ### 3. Top 10 Union Distribution
 ![Union Distribution](union_distribution_chart.png?v=1784569967)
 
-### 3. Top 10 Union Distribution
+### 3. Male & Femle Analytics
 ![Union Distribution](male-female.jpg?v=1784569967)
 🔍 Foundational Statistical Findings
 
@@ -29,19 +29,7 @@ Below is the live data visualization tracking our regional distributions across 
 📈 Verified Statistical Insights (Live Monitoring Output)
 
 
-    Geographic Sample Distribution: The tracking dataset automatically parses real-time metrics directly across active field household records. **Rangpur** lead with **15 records**, followed by **Gaibandha** (**15**), **Kurigram** (**13**) and **Dinajpur** (**12**). Total live tracked sample size is 55 households.
 
-    Target Demographics: In alignment with institutional M&E and maternal development targets, the baseline gender distribution was programmatically optimized, capturing 9 Female beneficiaries (50%) and 9 Male beneficiaries (50%).
-
-    Core Interventions: Programmatic resource allocation was distributed equally across core developmental pillars tracked live within the main tracking database architecture.
-
-    Hypothesis Testing (Paired Samples T-Test Results):
-
-  
-
-        Analysis: The tracking dataset reveals a substantial positive shift from baseline to endline tracking bounds.
-
-        Conclusion: The Paired Samples Test achieved an absolute significance value of p<.001. This mathematically proves that the capacity-building training interventions directly correlate with a highly significant economic household gain.
 
 🛠️ Repository File Structure
 
