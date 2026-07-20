@@ -38,6 +38,6 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add district_chart_v2.png case_analytics.png union_distribution_chart.png README.md
+          git add district_chart_v2.png case_analytics.png union_distribution_chart.png male-female.jpg README.md
           git commit -m "🚀 Auto-update dashboard charts and README"
           git push
