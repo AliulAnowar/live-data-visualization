@@ -21,7 +21,7 @@ The architecture operates entirely on open-source automation, ensuring that fiel
 ### 3. Top 10 Union Distribution
 ![Union Distribution](union_distribution_chart.png?v=1784580356)
 
-### 4. Male & Femle Analytics
+### 4. Male & Female Analytics
 ![Male & Female Analytics](male-female.jpg?v=1784580356)
 🔍 Verified Statistical Insights (Live Monitoring Output)
 
