@@ -22,7 +22,7 @@ The architecture operates entirely on open-source automation, ensuring that fiel
 ![Union Distribution](union_distribution_chart.png?v=1784579916)
 
 ### 4. Male & Femle Analytics
-![Male & Femle Analytics](male-female.jpg?v=1784579916)
+![Male & Female Analytics](male-female.jpg?v=1784579916)
 🔍 Verified Statistical Insights (Live Monitoring Output)
 
     Geographic Sample Distribution: The tracking dataset automatically parses real-time metrics directly across active field household records. **Gaibandha** lead with **25 records**, followed by **Rangpur** (**15**), **Kurigram** (**13**) and **Dinajpur** (**12**). Total live tracked sample size is 65 households.
