@@ -228,20 +228,20 @@ new_demo_section = (
     f"{male_count} Male beneficiaries ({male_pct:.1f}%)."
 )
 
+# FIXED: Changed `\.\s*` to general whitespace/punctuation flexibility so commas don't break it
 content = re.sub(
-    r'Geographic Sample Distribution:.*?\.\s*Total live tracked sample size is.*?\.',
+    r'Geographic Sample Distribution:.*?(?:Total live tracked sample size is|\.)\s*\d+\s*households\.',
     new_geo_section,
     content,
     flags=re.DOTALL
 )
 
 content = re.sub(
-    r'Target Demographics:.*?\.\s*capturing.*?\.',
+    r'Target Demographics:.*?(?:capturing|optimized).*?Male beneficiaries\s*\([\d\.]+\%\)\.',
     new_demo_section,
     content,
     flags=re.DOTALL
 )
-
 # Cache-busting timestamps for all charts (including male-female.jpg)
 timestamp = int(time.time())
 content = re.sub(r'\(district_chart_v2\.png(\?v=\d+)?\)', f'(district_chart_v2.png?v={timestamp})', content)
