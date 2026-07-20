@@ -20,6 +20,9 @@ The architecture operates entirely on open-source automation, ensuring that fiel
 
 ### 3. Top 10 Union Distribution
 ![Union Distribution](union_distribution_chart.png?v=1784569628)
+
+### 3. Top 10 Union Distribution
+![Union Distribution](male-female.jpg?v=1784569628)
 🔍 Foundational Statistical Findings
 
 Below is the live data visualization tracking our regional distributions across the target sample size, automatically compiled by our Python and GitHub Actions cloud pipeline:
