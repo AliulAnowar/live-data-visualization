@@ -13,21 +13,21 @@ The architecture operates entirely on open-source automation, ensuring that fiel
 
     Automated Visualization Deployment: The script draws a pristine statistical frequency chart via matplotlib and automatically overwrites the web asset, updating the public dashboard in real time.
 ### 1. District Distribution
-![District Chart](district_chart_v2.png?v=1790778872)
+![District Chart](district_chart_v2.png?v=1790779490)
 
 ### 2. Case Analytics
-![Case Analytics](case_analytics.png?v=1790778872)
+![Case Analytics](case_analytics.png?v=1790779490)
 
 ### 3. Top 10 Union Distribution
-![Union Distribution](union_distribution_chart.png?v=1790778872)
+![Union Distribution](union_distribution_chart.png?v=1790779490)
 
 ### 4. Male & Female Analytics
-![Male & Female Analytics](male-female.jpg?v=1790778872)
+![Male & Female Analytics](male-female.jpg?v=1790779490)
 🔍 Verified Statistical Insights (Live Monitoring Output)
 
-    Geographic Sample Distribution: The tracking dataset automatically parses real-time metrics directly across active field household records. **Gaibandha** lead with **129 records**, followed by **Rangpur** (**15**), **Kurigram** (**13**) and **Dinajpur** (**12**). Total live tracked sample size is 169 households.
+    Geographic Sample Distribution: The tracking dataset automatically parses real-time metrics directly across active field household records. **Kurigram** lead with **108 records**, followed by **Gaibandha** (**37**), **Rangpur** (**12**) and **Dinajpur** (**12**). Total live tracked sample size is 169 households.
 
-    Target Demographics: In alignment with institutional M&E and maternal development targets, the baseline gender distribution was programmatically optimized, capturing 89 Female beneficiaries (52.7%) and 80 Male beneficiaries (47.3%).
+    Target Demographics: In alignment with institutional M&E and maternal development targets, the baseline gender distribution was programmatically optimized, capturing 28 Female beneficiaries (16.6%) and 141 Male beneficiaries (83.4%).
 
 Below is the live data visualization tracking our regional distributions across the target sample size, automatically compiled by our Python and GitHub Actions cloud pipeline:
 📈 Verified Statistical Insights (Live Monitoring Output)
