@@ -13,16 +13,16 @@ The architecture operates entirely on open-source automation, ensuring that fiel
 
     Automated Visualization Deployment: The script draws a pristine statistical frequency chart via matplotlib and automatically overwrites the web asset, updating the public dashboard in real time.
 ### 1. District Distribution
-![District Chart](district_chart_v2.png?v=1791447260)
+![District Chart](district_chart_v2.png?v=1791533746)
 
 ### 2. Case Analytics
-![Case Analytics](case_analytics.png?v=1791447260)
+![Case Analytics](case_analytics.png?v=1791533746)
 
 ### 3. Top 10 Union Distribution
-![Union Distribution](union_distribution_chart.png?v=1791447260)
+![Union Distribution](union_distribution_chart.png?v=1791533746)
 
 ### 4. Male & Female Analytics
-![Male & Female Analytics](male-female.jpg?v=1791447260)
+![Male & Female Analytics](male-female.jpg?v=1791533746)
 🔍 Verified Statistical Insights (Live Monitoring Output)
 
     Geographic Sample Distribution: The tracking dataset automatically parses real-time metrics directly across active field household records. **Kurigram** lead with **108 records**, followed by **Gaibandha** (**37**), **Rangpur** (**12**) and **Dinajpur** (**12**). Total live tracked sample size is 169 households.
