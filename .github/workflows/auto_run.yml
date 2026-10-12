@@ -38,7 +38,23 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git add district_chart_v2.png case_analytics.png union_distribution_chart.png male-female.jpg README.md
-          git commit -m "🚀 Auto-update dashboard charts and README"
-          git pull --rebase origin main
-          git push
+
+          # Check if any generated files changed
+          if [ -z "$(git status --porcelain)" ]; then
+          echo "No changes to commit"
+          exit 0
+          fi
+
+          # Stage all new, modified, or deleted files
+          git add -A
+          git commit -m "🚀 Auto-update dashboard charts and README" || echo "Nothing to commit"
+
+          # Rebase cleanly with autostash and favor remote on conflict
+          git fetch origin main
+          git rebase origin/main --autostash -X theirs || {
+          echo "Rebase failed; aborting"
+          git rebase --abort || true
+          exit 1
+          }
+          # Push updated files safely
+          git push --force-with-lease origin HEAD:main
