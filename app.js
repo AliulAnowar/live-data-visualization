@@ -1,10 +1,4 @@
 // --- app.js: Optimized M&E Enterprise Portal Logic ---
-const { createClient } = supabase;
-const supabaseUrl = 'https://eghmzetfcimllmenhhei.supabase.co';
-const supabaseKey = 'sb_publishable_xHtk1KS8h_c7Xp26RoMk0w_EbUifBgQ';
-const supabaseClient = createClient(supabaseUrl, supabaseKey);
-let currentUserProfile = null;
-let caseSubscription = null;
 
 // 2. THIS LISTENER ONLY SETS UP THE UI
 document.addEventListener('DOMContentLoaded', () => {
